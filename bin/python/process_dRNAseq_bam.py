@@ -302,7 +302,7 @@ def main():
     genome_seq = import_fasta(genome_fasta_path)
     print("Parsing the input bam.")
     if invert_strand == "yes":
-        print("WARN: invert_strand set to True, so inverting the observed read strands!")
+        print("WARN: invert_strand set to 'yes', so inverting the observed read strands!")
     transcript_dict = parse_bam(bam_path, cigar_key, genome_seq, min_intron_length, invert_strand, illumina_read_number)
 
     # Eliminate junctions that end in very small homology
