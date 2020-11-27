@@ -89,7 +89,8 @@ def get_args():
         required=True,
         default="",
         help='''
-        Path to the region report, in tsv format.
+        Path to the region report, in tsv format. NOTE - if the report already
+        exists, it will be appended to!
         '''
     )
     parser.add_argument(
@@ -100,6 +101,7 @@ def get_args():
         default="",
         help='''
         Path to the generated coordinate derived transcripts, in fasta format.
+        NOTE - if the fasta already exists, it will be appended to!
         '''
     )
 
@@ -153,13 +155,48 @@ def get_args():
         included in other outputs.
 
         Complex transcripts are those that have multiple alignments - e.g.
-        both primary and secondary alignments.
+        both primary and secondary alignments. This will be appended to if it
+        already exists.
 
         <Default: No output file>
         '''
     )
+    parser.add_argument(
+        '-i',
+        '--invert_strand',
+        type=bool,
+        required=False,
+        default=False,
+        help='''
+        Whether to invert the detected read strands (e.g. + --> - and vice versa).
+        This is useful for analysis of some stranded illumina RNAseq data, where
+        one of the reads is sometime inverted relative to the actual orientation
+        of the RNA strand being sequenced.
+
+        <default: False>
+        '''
+    )
+    parser.add_argument(
+        '-n',
+        '--illumina_read_number',
+        type=str,
+        required=False,
+        default="",
+        help='''
+        If processing one read from a paired illumina sequencing bam, need
+        to consider the fact that read pairs have the same name. Because it
+        is possible we will want to disambiguate the junctions from each read
+        later on, setting this switch to 1 or 2 will append _1 or _2 to each
+        transcript name.
+        '''
+    )
 
     args = parser.parse_args()
+
+    if args.illumina_read_number not in [str(1), str(2), 1, 2, ""]:
+        msg = "illumina_read_number must be set to blank, 1, or 2!"
+        msg += " Currently, it's set as {}".format(args.illumina_read_number)
+        raise ValueError(msg)
 
     return args
 
@@ -234,7 +271,8 @@ def main():
     min_intron_length = args.min_intron_length
     min_end_homology = args.min_end_homology
     complex_transcript_list_path = args.complex_transcript_list_path
-
+    invert_strand = args.invert_strand
+    illumina_read_number = args.illumina_read_number
 
 
     # Constants
@@ -257,22 +295,27 @@ def main():
 
     # Import bam and genome
     genome_seq = import_fasta(genome_fasta_path)
-    transcript_dict = parse_bam(bam_path, cigar_key, genome_seq, min_intron_length)
+    print("Parsing the input bam.")
+    if invert_strand == True:
+        print("WARN: invert_strand set to True, so inverting the observed read strands!")
+    transcript_dict = parse_bam(bam_path, cigar_key, genome_seq, min_intron_length, invert_strand, illumina_read_number)
 
     # Eliminate junctions that end in very small homology
     transcript_dict = limit_homology_ends(transcript_dict, min_end_homology)
 
     # Write outputs
+    print("Writing output reports.")
     output_report = aggregate_output_report(transcript_dict)
-    write_output(output_report, report_path)
+    write_output(output_report, report_path, append_if_exists=True, append_if_exists_remove_header=True)
 
     coord_derived_transcripts = aggregate_coordinate_derived_transcripts(transcript_dict)
-    write_output(coord_derived_transcripts, coordinate_derived_transcript_path)
-
+    write_output(coord_derived_transcripts, coordinate_derived_transcript_path, append_if_exists=True, append_if_exists_remove_header=False)
 
     complex_transcript_list = generate_complex_transcript_list(transcript_dict)
     if complex_transcript_list_path != "":
-        write_output(complex_transcript_list, complex_transcript_list_path)
+        write_output(complex_transcript_list, complex_transcript_list_path, append_if_exists=True, append_if_exists_remove_header=False)
+
+    print("Finished!")
 
 if __name__ == '__main__':
     main()
