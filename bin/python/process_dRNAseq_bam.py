@@ -164,16 +164,16 @@ def get_args():
     parser.add_argument(
         '-i',
         '--invert_strand',
-        type=bool,
+        type=str,
         required=False,
-        default=False,
+        default="no",
         help='''
         Whether to invert the detected read strands (e.g. + --> - and vice versa).
         This is useful for analysis of some stranded illumina RNAseq data, where
         one of the reads is sometime inverted relative to the actual orientation
         of the RNA strand being sequenced.
 
-        <default: False>
+        <default: no> Options: yes or no.
         '''
     )
     parser.add_argument(
@@ -296,7 +296,7 @@ def main():
     # Import bam and genome
     genome_seq = import_fasta(genome_fasta_path)
     print("Parsing the input bam.")
-    if invert_strand == True:
+    if invert_strand == "yes":
         print("WARN: invert_strand set to True, so inverting the observed read strands!")
     transcript_dict = parse_bam(bam_path, cigar_key, genome_seq, min_intron_length, invert_strand, illumina_read_number)
 

@@ -139,7 +139,7 @@ def flip_antisense_transcript_positions(transcript_dict):
 
     return transcript_dict
 
-def parse_bam(bam_path, cigar_key, genome_seq, min_intron_length=100, invert_strand=False, illumina_read_number=""):
+def parse_bam(bam_path, cigar_key, genome_seq, min_intron_length=100, invert_strand="no", illumina_read_number=""):
     """
     The purpose of this function is to parse in a bam
     and generate a dictionary oftranscript_objects with
@@ -181,7 +181,7 @@ def parse_bam(bam_path, cigar_key, genome_seq, min_intron_length=100, invert_str
             strand = "-"
 
         # Inverse strand if called for
-        if invert_strand == True:
+        if invert_strand == "yes":
             if strand == "+":
                 strand = "-"
             elif strand == "-":
