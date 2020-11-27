@@ -193,9 +193,14 @@ def get_args():
 
     args = parser.parse_args()
 
-    if args.illumina_read_number not in ["yes", "no"]:
-        msg = "illumina_read_number must be set to yes or no!"
+    if args.illumina_read_number not in [str(1), str(2), 1, 2, ""]:
+        msg = "illumina_read_number must be set to blank, 1, or 2!"
         msg += " Currently, it's set as {}".format(args.illumina_read_number)
+        raise ValueError(msg)
+
+    if args.invert_strand not in ["yes", "no"]:
+        msg = "invert_strand must be set to yes or no"
+        msg += " Currently, it's set as {}".format(args.invert_strand)
         raise ValueError(msg)
 
     return args
