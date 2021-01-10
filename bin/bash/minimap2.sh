@@ -84,9 +84,9 @@ THREADS=${THREADS:-1}
 # Configure settings for excluding secondary/supplementary reads.
 #------------------------------------------------------------------------------#
 if [[ $ONLY_PRIMARY_READS == "yes" ]] ; then
-  NONPRIMARY_SETTINGS="--secondary no -N 0"
+  NONPRIMARY_SETTINGS="--secondary no"
 elif [[ $ONLY_PRIMARY_READS == "no" ]] ; then
-  NONPRIMARY_SETTINGS="--secondary yes -N 5"
+  NONPRIMARY_SETTINGS="--secondary yes"
 else
   echo "NONPRIMARY_SETTINGS must be set to 'yes' or 'no'."
   echo "You entered $NONPRIMARY_SETTINGS"
@@ -94,7 +94,7 @@ else
 fi
 
 #------------------------------------------------------------------------------#
-# Run cd-hit
+# Main
 #------------------------------------------------------------------------------#
 echo "
 INPUTS -
