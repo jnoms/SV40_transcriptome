@@ -111,10 +111,8 @@ THREADS: $THREADS
 
 echo "Starting script."
 
-# Make directories if necessary
+# Make output dir if needed
 mkdir -p $(dirname $OUT_BAM)
-mkdir -p $(dirname $OUT_BED)
-mkdir -p $(dirname $OUT_FASTA)
 
 # Run minimap
 echo "Running minimap2."
@@ -130,6 +128,7 @@ samtools index $OUT_BAM
 
 # Geneate BED if desired.
 if [[ $OUT_BED != "" ]] ; then
+    mkdir -p $(dirname $OUT_BED)
     echo "Generating BED file."
     bedtools bamtobed \
     -bed12 \
@@ -138,6 +137,7 @@ fi
 
 # Geneate fasta if desired.
 if [[ $OUT_FASTA != "" ]] ; then
+  mkdir -p $(dirname $OUT_FASTA)
   bedtools getfasta \
   -split \
   -name \
