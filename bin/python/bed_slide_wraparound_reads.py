@@ -53,7 +53,7 @@ def get_args():
         '''
     )
     parser.add_argument(
-        '-i',
+        '-w',
         '--only_keep_wraparound_reads',
         type=str,
         required=False,
