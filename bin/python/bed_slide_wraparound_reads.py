@@ -53,6 +53,15 @@ def get_args():
         '''
     )
     parser.add_argument(
+        '-g',
+        '--genome_length',
+        type=int,
+        required=True,
+        help='''
+        Length of a single copy of the reference genome. SV40 length is 5243bp.
+        '''
+    )
+    parser.add_argument(
         '-w',
         '--only_keep_wraparound_reads',
         type=str,
@@ -83,6 +92,7 @@ def main():
     args = get_args()
     in_bed = args.in_bed
     out_bed = args.out_bed
+    genome_length = args.genome_length
     only_keep_wraparound_reads = args.only_keep_wraparound_reads
 
     # Main
