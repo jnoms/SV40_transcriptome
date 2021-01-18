@@ -291,7 +291,7 @@ def count_and_rank_juncs(tx_objects):
     junc_counter = Counter()
     for tx in tx_objects.values():
 
-        junc_counter[str(tx.juncs)] += 1
+        junc_counter[str(tx.juncs) + tx.strand] += 1
 
     # Convert counter to a dictionary of structure - juncs: (rank, count)
 
@@ -308,7 +308,7 @@ def load_rank_and_count(tx_objects, junction_ranks):
     tx_objects = tx_objects.copy()
     for name, tx in tx_objects.items():
 
-        rank, count = junction_ranks[str(tx.juncs)]
+        rank, count = junction_ranks[str(tx.juncs) + tx.strand]
 
         tx.tx_class = rank
         tx.tx_class_count = count
