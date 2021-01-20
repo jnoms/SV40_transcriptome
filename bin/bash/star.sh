@@ -98,7 +98,7 @@ mkdir -p $(dirname $OUT_BAM)
 SAMPLE=$(basename ${OUT_BAM%.bam})
 
 STAR \
---runThreadN 5 \
+--runThreadN $THREADS \
 --genomeDir $REF_INDEX \
 --readFilesIn $INPUT_FASTQ \
 --outFileNamePrefix $(dirname $OUT_BAM)/${SAMPLE}_working/${SAMPLE}_ \
