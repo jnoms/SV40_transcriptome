@@ -269,7 +269,7 @@ def parse_bed_to_tx_objects(bed_path, invert_strand="no", paired_end_input="yes"
             blockStarts = line[bed_cols.index("blockStarts")]
 
             # Skip non-junction reads if specified
-            if blockCount < 2 and junc_reads_only == "yes":
+            if int(blockCount) < 2 and junc_reads_only == "yes":
                 continue
 
             # Invert strand if specified
