@@ -100,6 +100,20 @@ def get_args():
         the primary and secondary alignments are both tossed.
         '''
     )
+    parser.add_argument(
+        '-j',
+        '--junc_reads_only',
+        type=str,
+        required=False,
+        default="no",
+        help='''
+        str, options are yes or no, default is no.
+
+        If this is set to yes, only reads that have junctions will be output
+        to the span file. This is helpful to reduce file sizes when only
+        concerned about junctions.
+        '''
+    )
 
     args = parser.parse_args()
 
@@ -109,6 +123,9 @@ def get_args():
         raise ValueError(msg)
     if args.paired_end_input not in ["yes", "no"]:
         msg = "paired_end_input must be yes or no. You input {}.".format(args.paired_end_input)
+        raise ValueError(msg)
+    if args.junc_reads_only not in ["yes", "no"]:
+        msg = "junc_reads_only must be yes or no. You input {}.".format(args.junc_reads_only)
         raise ValueError(msg)
 
     return args
@@ -230,7 +247,7 @@ def find_spans(tx_start, tx_end, blockSizes, blockStarts, tx_name):
 #------------------------------------------------------------------------------#
 # Functions for this script
 #------------------------------------------------------------------------------#
-def parse_bed_to_tx_objects(bed_path, invert_strand="no", paired_end_input="yes"):
+def parse_bed_to_tx_objects(bed_path, invert_strand="no", paired_end_input="yes", junc_reads_only="no"):
     """
     Given a path to a bed file, will parse each line and load them into a transcript
     object (one per line). Thus, returns a dictionary of tx_name:tx_object.
@@ -247,8 +264,13 @@ def parse_bed_to_tx_objects(bed_path, invert_strand="no", paired_end_input="yes"
             tx_start = line[bed_cols.index("tx_start")]
             tx_end = line[bed_cols.index("tx_end")]
             strand = line[bed_cols.index("strand")]
+            blockCount = line[bed_cols.index("blockCount")]
             blockSizes = line[bed_cols.index("blockSizes")]
             blockStarts = line[bed_cols.index("blockStarts")]
+
+            # Skip non-junction reads if specified
+            if blockCount < 2 and junc_reads_only == "yes":
+                continue
 
             # Invert strand if specified
             if invert_strand == "yes":
@@ -355,13 +377,14 @@ def main():
     output_spans = args.output_spans
     invert_strand = args.invert_strand
     paired_end_input = args.paired_end_input
+    junc_reads_only = args.junc_reads_only
 
     # Main
     #--------------------------------------------------------------------#
     print("{}: Starting script".format(sys.argv[0]))
 
     # Parse the bed file
-    tx_objects = parse_bed_to_tx_objects(bed_path, invert_strand, paired_end_input)
+    tx_objects = parse_bed_to_tx_objects(bed_path, invert_strand, paired_end_input, junc_reads_only)
 
     # Count and rank the junctions... make new dict of structure
     # junc: (rank, count)
