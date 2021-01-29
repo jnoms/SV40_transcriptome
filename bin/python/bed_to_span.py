@@ -80,7 +80,7 @@ def get_args():
         '--paired_end_input',
         type=str,
         required=False,
-        default="yes",
+        default="no",
         help='''
         str, options are yes or no, default is no.
 

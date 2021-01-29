@@ -66,9 +66,9 @@ def get_args():
         '--only_keep_wraparound_reads',
         type=str,
         required=False,
-        default="yes",
+        default="no",
         help='''
-        str, options are yes or no, default is yes.
+        str, options are yes or no, default is no.
 
         If specified as yes, will only output reads that map across multiple
         genome lengths. If set as no, will output all reads.

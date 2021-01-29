@@ -61,6 +61,17 @@ def get_args():
         10486, etc.
         '''
     )
+    parser.add_argument(
+        '-s',
+        '--spliced_only',
+        required=False,
+        default=False,
+        action="store_true",
+        help='''
+        By default, this is not implemented. If you include this switch, the
+        output will only contain spliced entries.
+        '''
+    )
     args = parser.parse_args()
 
     return args
@@ -74,6 +85,7 @@ def main():
     in_bed = args.in_bed
     out_bed = args.out_bed
     reference_length = args.reference_length
+    spliced_only = args.spliced_only
 
     # Main
     #--------------------------------------------------------------------#
@@ -97,6 +109,10 @@ def main():
                 n_blocks = int(entry[9])
                 blockSizes = entry[10].rstrip(",").split(",")
                 blockStarts = entry[11].rstrip(",").split(",")
+
+                # If only keeping spiced reads, skip this entry
+                if spliced_only and n_blocks == 1:
+                    continue
 
                 # Calculate start_dif and end_dif
                 start_dif = tx_start

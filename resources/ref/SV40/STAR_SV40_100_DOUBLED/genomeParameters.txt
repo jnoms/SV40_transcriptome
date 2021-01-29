@@ -1,0 +1,19 @@
+### STAR   --runMode genomeGenerate   --runThreadN 6   --genomeDir SV40_100_DOUBLED   --genomeFastaFiles SV40_100_DOUBLED.fasta      --genomeSAindexNbases 5
+### GstrandBit 32
+versionGenome	2.7.4a
+genomeType	Full
+genomeFastaFiles	SV40_100_DOUBLED.fasta 
+genomeSAindexNbases	5
+genomeChrBinNbits	18
+genomeSAsparseD	1
+genomeTransformType	None
+genomeTransformVCF	-
+sjdbOverhang	0
+sjdbFileChrStartEnd	- 
+sjdbGTFfile	-
+sjdbGTFchrPrefix	-
+sjdbGTFfeatureExon	exon
+sjdbGTFtagExonParentTranscript	transcript_id
+sjdbGTFtagExonParentGene	gene_id
+sjdbInsertSave	Basic
+genomeFileSizes	262144 86513

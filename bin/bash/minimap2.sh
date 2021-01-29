@@ -141,6 +141,7 @@ if [[ $OUT_FASTA != "" ]] ; then
   bedtools getfasta \
   -split \
   -name \
+  -s \
   -fi $REF_FASTA \
   -bed $OUT_BED > $OUT_FASTA
 fi
