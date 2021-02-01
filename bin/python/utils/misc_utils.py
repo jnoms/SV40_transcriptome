@@ -8,77 +8,36 @@
 import pathlib
 import os
 import sys
+import gzip
+import io
+import pathlib
 
-# to flatten complex list/tuple/etc objects
-from pandas.core.common import flatten
-
-def import_fasta(path):
+def open_file(path, read_or_write="r"):
     """
-    Reads in a a fasta as a string. The fasta should have ONLY ONE
-    entry/header.
+    Wrapper for opening files in read/write, but handles if the path ends in .gz.
+    Function also will make output directories if needed.
+
+    - if path ends with .gz, will open with the gzip package. Otherwise, will use
+    standard open function.
+    - if read_or_write == r, will open in read mode. If it == w, will open in write mode.
+      I think if you set it to 'a' it'll append.
     """
 
-    header_count = 0
-    seq = ""
-
-    with open(path) as infile:
-        for line in infile:
-            if line.startswith(">"):
-                header_count += 1
-                continue
-
-            seq += line.rstrip("\n")
-
-    if header_count > 1:
-        msg = "import_fasta: The fasta must contain only one entry/header.\n"
-        msg = msg + "Detected {} headers.".format(header_count)
+    # Validate the input parameter
+    if read_or_write not in ["r", "w", "a"]:
+        msg = "read_or_write must be 'r' or 'w'. You entered {}".format(read_or_write)
         raise ValueError(msg)
 
-    return seq
+    # Make sure output file dir is made if using function in write or append mode
+    if read_or_write != "r":
+        out_dir = os.path.dirname(path)
+        pathlib.Path(out_dir).mkdir(parents=True, exist_ok=True)
 
-
-def write_output(msg, path, append_if_exists=False, append_if_exists_remove_header=False):
-    """
-    This function generates the output file, but has a bit extra complexity.
-
-    If append_if_exists is set to True, it will append to the desired output file rather
-    than generating a new one/overwriting any existing file.
-
-    if append_if_exists_remove_header is set to True and we are appending,
-    this function will remove the first line from msg prior to appending. This should be used
-    if there is a redunant header in the msg that is no longer needed consdiering the extant
-    file being appended to should have it.
-    """
-
-    # Make output directory if needed
-    out_dir = os.path.dirname(path)
-    pathlib.Path(out_dir).mkdir(parents=True, exist_ok=True)
-
-    # If we're not appending no matter what, or the file doesn't exist, proceed accordingly
-    if append_if_exists == False or not os.path.isfile(path):
-        with open(path, "w") as outfile:
-            outfile.write(msg)
-            return
-
-    # Otherwise, will be appending
-    print("write_output: Because {} already exists, am appending to it.".format(path))
-
-    # Now, check if we need to remove the header
-    if append_if_exists_remove_header == True:
-        msg = "\n".join(msg.split("\n")[1:])
-
-    with open(path, "a") as outfile:
-        outfile.write(msg)
-
-def write_output_simple(msg, path):
-
-    # Make output directory if needed
-    out_dir = os.path.dirname(path)
-    pathlib.Path(out_dir).mkdir(parents=True, exist_ok=True)
-
-    with open(path, "w") as outfile:
-        outfile.write(msg)
-
+    # Open with correct package
+    if path.endswith(".gz"):
+        return io.TextIOWrapper(gzip.GzipFile(path, read_or_write))
+    else:
+        return open(path, read_or_write)
 
 
 if __name__ == '__main__':

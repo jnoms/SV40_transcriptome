@@ -10,6 +10,10 @@ include { slide_bed } from './bin/modules/slide_bed'
 include { bed_to_span } from './bin/modules/bed_to_span'
 include { bed_elongate_illumina_reads } from './bin/modules/bed_elongate_illumina_reads'
 include { prodigal } from './bin/modules/prodigal'
+include { filter_prodigal } from './bin/modules/filter_prodigal'
+include { prodigal_to_orfs_direct } from './bin/modules/prodigal_to_orfs_direct'
+include { diamond } from './bin/modules/diamond'
+
 
 // Note: Add addParams(param_name: 'desired value') to end of include line to
 // specify a param value for that module. OTHERWISE, each param is taken
@@ -74,6 +78,19 @@ workflow illumina {
   // Predict ORFs with Prodigal
   prodigal(bed_elongate_illumina_reads.out.elongated_fasta)
 
+  // Filter prodigal for only spliced ORFs - need to merge with bed file first.
+  prodigal.out.prodigal_out
+    .join(bed_elongate_illumina_reads.out.elongated_bed) |\
+    filter_prodigal
+
+  // Extract ORFs
+  bed_elongate_illumina_reads.out.elongated_fasta
+    .join(filter_prodigal.out.filtered_prodigal) |\
+    prodigal_to_orfs_direct
+
+  // Align with diamond
+  prodigal_to_orfs_direct.out.pr_orfs |\
+    diamond
 }
 
 workflow nanopore {
@@ -100,6 +117,14 @@ workflow nanopore {
   // Predict ORFs with prodigal
   prodigal(aligned.fasta)
 
+  // Extract ORFs
+  aligned.fasta
+    .join(prodigal.out.prodigal_out) |\
+    prodigal_to_orfs_direct
+
+  // Align with diamond
+  prodigal_to_orfs_direct.out.pr_orfs |\
+    diamond
 }
 
 

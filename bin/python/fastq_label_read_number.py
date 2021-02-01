@@ -9,6 +9,8 @@ from Bio.Seq import Seq
 import argparse
 import sys
 
+from utils.misc_utils import open_file
+
 def get_args():
     parser = argparse.ArgumentParser(description="""
             The purpose of this script is to add _1 or _2 to each read name in
@@ -60,26 +62,6 @@ def get_args():
 
     return args
 
-def open_file(path, read_or_write="r"):
-    """
-    Wrapper for opening files in read/write, but handles if the path ends in .gz.
-
-    - if path ends with .gz, will open with the gzip package. Otherwise, will use
-    standard open function.
-    - if read_or_write == r, will open in read mode. If it == w, will open in write mode.
-      I think if you set it to 'a' it'll append.
-    """
-
-    # Validate the input parameter
-    if read_or_write not in ["r", "w", "a"]:
-        msg = "read_or_write must be 'r' or 'w'. You entered {}".format(read_or_write)
-        raise ValueError(msg)
-
-    # Open with correct package
-    if path.endswith(".gz"):
-        return io.TextIOWrapper(gzip.GzipFile(path, read_or_write))
-    else:
-        return open(path, read_or_write)
 
 def main():
 

@@ -5,8 +5,6 @@
 #SBATCH --mem=10GB
 #SBATCH -c 2
 
-module load gcc
-
 #------------------------------------------------------------------------------#
 # Defining usage and setting input
 #------------------------------------------------------------------------------#
@@ -34,8 +32,10 @@ usage() {
         -e <EVALUE>      Max evalue.
                           Default: 10
         -f <OUT_FORMAT>  Output format.
-                          Default: '6 qseqid qlen stitle sseqid evalue bitscore
-                                    pident length qstart qend sstart send'
+                          Default: '6 qseqid stitle sseqid evalue bitscore
+                                    pident length qlen slen qstart qend sstart
+                                    send'
+                          - length == alignment length
         -l <LOG_FILE>   Path to the log file
                            Default: No log file.
         -s <SAMPLE_ID>  Name of the sample, used for logging purposes.
@@ -75,13 +75,14 @@ while getopts d:q:o:m:t:e:f:l:s:T:k:u: option ; do
         esac
 done
 
+
 #------------------------------------------------------------------------------#
 # Setting defaults
 #------------------------------------------------------------------------------#
 MEMORY=${MEMORY:-10}
 TEMP_DIR=${TEMP_DIR:-./diamond_temp}
 EVALUE=${EVALUE:-10}
-OUT_FORMAT=${OUT_FORMAT:-"6 qseqid qlen sseqid evalue bitscore pident length qstart qend sstart send"}
+OUT_FORMAT=${OUT_FORMAT:-"6 qseqid sseqid evalue bitscore pident length qlen slen qstart qend sstart send"}
 SAMPLE_ID=${SAMPLE_ID:-$(basename $QUERY)}
 DIAMOND_TYPE=${DIAMOND_TYPE:-blastp}
 INCLUDE_UNALIGNED=${INCLUDE_UNALIGNED:-TRUE}
@@ -109,7 +110,7 @@ fi
 if [[ $INCLUDE_UNALIGNED == "FALSE" ]] ; then
   UNALIGNED_SWITCH_LINE=""
 elif [[ $INCLUDE_UNALIGNED == "TRUE" ]] ; then
-  UNALIGNED_SWITCH_LINE="-unal 1"
+  UNALIGNED_SWITCH_LINE="--unal 1"
 else
   echo "INCLUDE_UNALIGNED must be set to TRUE or FALSE."
   echo "You entered $INCLUDE_UNALIGNED"
@@ -146,6 +147,22 @@ write_log() {
   echo $OUTPUT >> $log_file
 }
 
+echo "
+INPUTS -
+
+DATABASE: $DATABASE
+QUERY: $QUERY
+OUTPUT_PATH: $OUTPUT_PATH
+MEMORY: $MEMORY
+TEMP_DIR: $TEMP_DIR
+EVALUE: $EVALUE
+OUT_FORMAT: $OUT_FORMAT
+LOG_FILE: $LOG_FILE
+SAMPLE_ID: $SAMPLE_ID
+DIAMOND_TYPE: $DIAMOND_TYPE
+MAX_TARGETS: $MAX_TARGETS
+INCLUDE_UNALIGNED: $INCLUDE_UNALIGNED
+"
 
 #Make sure all necesssary directories have been made
 mkdir -p $( dirname $OUTPUT_PATH )
@@ -188,7 +205,8 @@ diamond $DIAMOND_TYPE \
 --index-chunks 1 \
 --block-size $BLOCK \
 $UNALIGNED_SWITCH_LINE \
---max-target-seqs $MAX_TARGETS
+--max-target-seqs $MAX_TARGETS \
+--max-hsps 10
 
 # Remove temp directory
 rm -r $TEMP_DIR
