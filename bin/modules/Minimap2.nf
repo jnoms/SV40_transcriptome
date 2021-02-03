@@ -40,7 +40,7 @@ process Minimap2 {
   -o ${sampleID}.bam \
   -b ${sampleID}.bed \
   -f ${sampleID}_DERVIED.fasta \
-  -p ${params.only_primary_alignments} \
+  -P ${params.only_primary_alignments} \
   -t ${task.cpus}
   """
 }
