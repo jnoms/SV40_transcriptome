@@ -13,6 +13,8 @@ include { prodigal } from './bin/modules/prodigal'
 include { filter_prodigal } from './bin/modules/filter_prodigal'
 include { prodigal_to_orfs_direct } from './bin/modules/prodigal_to_orfs_direct'
 include { diamond } from './bin/modules/diamond'
+include { bed_extract_representatives } from './bin/modules/bed_extract_representatives'
+include { characterize_ORFs } from './bin/modules/characterize_ORFs'
 
 
 // Note: Add addParams(param_name: 'desired value') to end of include line to
@@ -72,8 +74,13 @@ workflow illumina {
   // ORF ANALYSIS
   // ------------------------------------------------------------ //
 
+  // Extract representative transcripts from the slid bed
+  slide_bed.out.slid_bed
+    .join(bed_to_span.out.spans) |\
+    bed_extract_representatives
+
   // Elongate bed
-  bed_elongate_illumina_reads(slide_bed.out.slid_bed)
+  bed_elongate_illumina_reads(bed_extract_representatives.out.representatives_bed)
 
   // Predict ORFs with Prodigal
   prodigal(bed_elongate_illumina_reads.out.elongated_fasta)
@@ -91,6 +98,12 @@ workflow illumina {
   // Align with diamond
   prodigal_to_orfs_direct.out.pr_orfs |\
     diamond
+
+  // Generate ORF report
+  diamond.out.diamond_out
+    .join(bed_elongate_illumina_reads.out.elongated_bed)
+    .join(bed_to_span.out.spans) |\
+    characterize_ORFs
 }
 
 workflow nanopore {
@@ -125,6 +138,12 @@ workflow nanopore {
   // Align with diamond
   prodigal_to_orfs_direct.out.pr_orfs |\
     diamond
+
+  // Generate ORF report
+  diamond.out.diamond_out
+    .join(slide_bed.out.slid_bed)
+    .join(bed_to_span.out.spans) |\
+    characterize_ORFs
 }
 
 

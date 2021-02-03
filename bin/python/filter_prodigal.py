@@ -8,7 +8,7 @@ import sys
 import numpy as np
 import io
 
-from utils.misc_utils import open_file
+from utils.misc_utils import open_file, parse_bed_blocks
 
 
 def get_args():
@@ -85,55 +85,6 @@ def get_args():
 
     return args
 
-def parse_bed_blocks(input_bed):
-    """
-    Takes in the path to a bed file, and returns a dictionary
-    containing information on the end of each exon block
-    for each transcript (relative to the transcript). An exon block
-    end here is simply the cumulative sum of the blockSizes, with the
-    exception of the last cumsum blockSize which is the end of the transcript.
-
-    Output dictionary is of structure
-    tx_name:[pos1, pos2, ...] where each pos is the position of a splice.
-
-    Note - bed file is assumed to be 0-indexed, prodigal 1-indexed.
-    """
-
-    bed_splice_sites = dict()
-    with open_file(input_bed) as infile:
-
-        for line in infile:
-
-            line = line.rstrip("\n").split("\t")
-
-            # Parse bed
-            blockSizes = line[10].rstrip(",").split(",")
-            blockSizes = [int(n) for n in blockSizes]
-            tx_name = line[3]
-            n_blocks = int(line[9])
-
-            # If there is only one block there are no junctions, so continue
-            if n_blocks == 0:
-                continue
-
-            # The end of each block is the cumulative sum.
-            # Exception is the last cumsum, which is the end of the transcript
-            # rather than a splice site.
-            splice_sites = list(np.cumsum(blockSizes))[:-1]
-
-            # Handle repetative entries (which shouldn't occur...)
-            if tx_name in bed_splice_sites:
-                msg = "Found a duplicate transcript name in the bed. "
-                msg += "Make sure you disabled supplemental alignments "
-                msg += "and that, if using paired end illumina reads, the "
-                msg += "reads are labeled with _1 or _2 prior to mapping. "
-                msg += "Problematic transcript is {}".format(tx_name)
-                raise ValueError(msg)
-
-            # Write to dictionary
-            bed_splice_sites[tx_name] = splice_sites
-
-    return bed_splice_sites
 
 def main():
 

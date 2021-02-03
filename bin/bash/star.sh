@@ -123,7 +123,7 @@ mv $(dirname $OUT_BAM)/${SAMPLE}_working/${SAMPLE}*bam ${OUT_BAM}_unsorted
 # If no secondary reads are desired, remove non-primary alignments
 if [[ $ONLY_PRIMARY_READS == "yes" ]] ; then
   mv ${OUT_BAM}_unsorted ${OUT_BAM}_unsorted_TMP
-  samtools view -bh -F 256 ${OUT_BAM}_unsorted_TMP > ${OUT_BAM}_unsorted && rm ${OUT_BAM}_unsorted_TMP
+  samtools view -bh -F 2304 ${OUT_BAM}_unsorted_TMP > ${OUT_BAM}_unsorted && rm ${OUT_BAM}_unsorted_TMP
 elif [[ $ONLY_PRIMARY_READS == "no" ]] ; then
   :
 else

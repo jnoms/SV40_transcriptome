@@ -126,6 +126,17 @@ $NONPRIMARY_SETTINGS \
 $REF_FASTA $INPUT_FASTX | samtools view -bh -@ $THREADS | samtools sort -@ $THREADS > $OUT_BAM
 samtools index $OUT_BAM
 
+# If only primary reads are desired, also need to remove supplementary alignments.
+# The minimap2 settings only disallowed secondary alignments; supplementary may
+# still be there.
+if [[ $ONLY_PRIMARY_READS == "yes" ]] ; then
+  mv ${OUT_BAM} ${OUT_BAM}_TMP
+  samtools view -bh -F 2304 ${OUT_BAM}_TMP > ${OUT_BAM} && rm ${OUT_BAM}_TMP ${OUT_BAM}.bai
+  samtools index ${OUT_BAM}
+elif [[ $ONLY_PRIMARY_READS == "no" ]] ; then
+  :
+fi
+
 # Geneate BED if desired.
 if [[ $OUT_BED != "" ]] ; then
     mkdir -p $(dirname $OUT_BED)

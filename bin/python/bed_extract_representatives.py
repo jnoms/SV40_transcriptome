@@ -5,7 +5,7 @@ import pathlib
 import os
 import sys
 
-from utils.misc_utils import open_file
+from utils.misc_utils import open_file, span_file_to_tx_class_dict
 
 def get_args():
     parser = argparse.ArgumentParser(description="""
@@ -67,37 +67,6 @@ def get_args():
     args = parser.parse_args()
 
     return args
-
-def span_file_to_tx_class_dict(in_spans, span_columns):
-    """
-    Input:
-        - path to span file
-
-    Output:
-        - dict of structure tx_name:(tx_class, tx_class_count)
-    """
-
-    tx_class_dict = dict()
-    with open_file(in_spans) as infile:
-
-        for line in infile:
-
-            # Skip header and newlines
-            if line.startswith(span_columns[0]):
-                continue
-            if line == "\n":
-                continue
-
-            # Parse
-            line = line.rstrip("\n").split("\t")
-            tx_name = line[span_columns.index("name")]
-            tx_class = line[span_columns.index("tx_class")]
-            tx_class_count = line[span_columns.index("tx_class_count")]
-
-            # Write to output dictionary
-            tx_class_dict[tx_name] = (tx_class, tx_class_count)
-
-    return tx_class_dict
 
 #------------------------------------------------------------------------------#
 # Constants
