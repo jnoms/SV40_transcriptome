@@ -1,0 +1,61 @@
+STAR version=2.7.7a
+STAR compilation time,server,dir=Mon Dec 28 13:38:40 EST 2020 vega:/home/dobin/data/STAR/STARcode/STAR.master/source
+##### Command Line:
+STAR --runThreadN 6 --runMode genomeGenerate --genomeDir STAR_JC_DOUBLE --genomeFastaFiles JCPyV_DOUBLE.fasta --genomeSAindexNbases 5
+##### Initial USER parameters from Command Line:
+###### All USER parameters from Command Line:
+runThreadN                    6     ~RE-DEFINED
+runMode                       genomeGenerate     ~RE-DEFINED
+genomeDir                     STAR_JC_DOUBLE     ~RE-DEFINED
+genomeFastaFiles              JCPyV_DOUBLE.fasta        ~RE-DEFINED
+genomeSAindexNbases           5     ~RE-DEFINED
+##### Finished reading parameters from all sources
+
+##### Final user re-defined parameters-----------------:
+runMode                           genomeGenerate
+runThreadN                        6
+genomeDir                         STAR_JC_DOUBLE
+genomeFastaFiles                  JCPyV_DOUBLE.fasta   
+genomeSAindexNbases               5
+
+-------------------------------
+##### Final effective command line:
+STAR   --runMode genomeGenerate   --runThreadN 6   --genomeDir STAR_JC_DOUBLE   --genomeFastaFiles JCPyV_DOUBLE.fasta      --genomeSAindexNbases 5
+----------------------------------------
+
+Number of fastq files for each mate = 1
+Finished loading and checking parameters
+--genomeDir directory created: STAR_JC_DOUBLE/
+Jan 20 17:13:38 ... starting to generate Genome files
+JCPyV_DOUBLE.fasta : chr # 0  "NC_001699.1" chrStart: 0
+Chromosome sequence lengths: 
+NC_001699.1	10260
+Genome sequence total length = 10260
+Genome size with padding = 262144
+Estimated genome size with padding and SJs: total=genome+SJ=201262144 = 262144 + 201000000
+GstrandBit=32
+Number of SA indices: 20520
+Jan 20 17:13:38 ... starting to sort Suffix Array. This may take a long time...
+Number of chunks: 6;   chunks size limit: 32832 bytes
+Jan 20 17:13:38 ... sorting Suffix Array chunks and saving them to disk...
+Writing 3360 bytes into STAR_JC_DOUBLE//SA_5 ; empty space on disk = 1002253953007616 bytes ... done
+Writing 32248 bytes into STAR_JC_DOUBLE//SA_2 ; empty space on disk = 1002253953007616 bytes ... done
+Writing 32528 bytes into STAR_JC_DOUBLE//SA_1 ; empty space on disk = 1002253953007616 bytes ... done
+Writing 32736 bytes into STAR_JC_DOUBLE//SA_0 ; empty space on disk = 1002253953007616 bytes ... done
+Writing 32616 bytes into STAR_JC_DOUBLE//SA_3 ; empty space on disk = 1002253953007616 bytes ...Writing 30672 bytes into STAR_JC_DOUBLE//SA_4 ; empty space on disk = 1002253953007616 bytes ... done
+ done
+Jan 20 17:13:38 ... loading chunks from disk, packing SA...
+Jan 20 17:13:38 ... finished generating suffix array
+Jan 20 17:13:38 ... generating Suffix Array index
+Jan 20 17:13:38 ... completed Suffix Array index
+Jan 20 17:13:38 ... writing Genome to disk ...
+Writing 262144 bytes into STAR_JC_DOUBLE//Genome ; empty space on disk = 1002253988134912 bytes ... done
+SA size in bytes: 84648
+Jan 20 17:13:38 ... writing Suffix Array to disk ...
+Writing 84648 bytes into STAR_JC_DOUBLE//SA ; empty space on disk = 1002253988134912 bytes ... done
+Jan 20 17:13:38 ... writing SAindex to disk
+Writing 8 bytes into STAR_JC_DOUBLE//SAindex ; empty space on disk = 1002253988134912 bytes ... done
+Writing 48 bytes into STAR_JC_DOUBLE//SAindex ; empty space on disk = 1002253988134912 bytes ... done
+Writing 5971 bytes into STAR_JC_DOUBLE//SAindex ; empty space on disk = 1002253988134912 bytes ... done
+Jan 20 17:13:38 ..... finished successfully
+DONE: Genome generation, EXITING
