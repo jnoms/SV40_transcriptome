@@ -127,6 +127,7 @@ dependencies:
   - pillow=8.0.1=py37he98fc37_0
   - pip=20.2.4=py37h06a4308_0
   - porechop=0.2.4=py37h9a982cc_1
+  - prodigal=2.6.3=h516909a_2
   - prometheus_client=0.8.0=py_0
   - prompt_toolkit=1.0.15=py_1
   - ptyprocess=0.6.0=pyhd3eb1b0_2
