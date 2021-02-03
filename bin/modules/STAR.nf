@@ -35,7 +35,6 @@ process STAR {
   -r ${params.STAR_reference_index} \
   -o ${sampleID}.bam \
   -b ${sampleID}.bed \
-  -f ${sampleID}_DERVIED.fasta \
   -p ${params.only_primary_alignments} \
   -t ${task.cpus}
   """
