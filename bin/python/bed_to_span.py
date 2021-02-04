@@ -327,7 +327,7 @@ def count_and_rank_juncs(tx_objects):
 
     # Add the unspliced to the junc_ranked
     for unspliced, count in unspliced_counter.items():
-        junc_ranked[unspliced] = ("u", count)
+        junc_ranked[unspliced] = ("u" + unspliced[-1], count)
 
     return junc_ranked
 
