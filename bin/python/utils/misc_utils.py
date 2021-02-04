@@ -70,6 +70,12 @@ def parse_bed_blocks(input_bed):
             blockSizes = [int(n) for n in blockSizes]
             tx_name = line[3]
             n_blocks = int(line[9])
+            strand = line[5]
+
+            # Reverse the blockSizes if the strand is negative, because the
+            # derived fasta will run the other direction
+            if strand == "-":
+                blockSizes = blockSizes[::-1]
 
             # If there is only one block there are no junctions, so continue
             if n_blocks == 0:
