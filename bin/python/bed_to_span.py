@@ -311,14 +311,23 @@ def count_and_rank_juncs(tx_objects):
 
     # Count and rank junction classes
     junc_counter = Counter()
+    unspliced_counter = Counter()
     for tx in tx_objects.values():
+
+        # If unspliced, reserve so it doesn't get ranked
+        if tx.juncs == []:
+            unspliced_counter[str(tx.juncs) + tx.strand] += 1
+            continue
 
         junc_counter[str(tx.juncs) + tx.strand] += 1
 
     # Convert counter to a dictionary of structure - juncs: (rank, count)
-
     junc_ranked = {pair[0]: (rank, pair[1])
     for rank, pair in enumerate(junc_counter.most_common())}
+
+    # Add the unspliced to the junc_ranked
+    for unspliced, count in unspliced_counter.items():
+        junc_ranked[unspliced] = ("u", count)
 
     return junc_ranked
 
