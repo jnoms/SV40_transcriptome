@@ -276,7 +276,8 @@ def format_alignment_dict(alignments, diamond_fields):
     filtered_alignment_dict = dict()
     for ORF, alignments in alignment_dict.items():
         alignment_lengths = [alignment[diamond_fields.index("length")] for alignment in alignments]
-        alignments = [alignment for alignment in alignments if alignment[diamond_fields.index("length")] == max(alignment_lengths)]
+        alignment_lengths = [int(alignment_length) for alignment_length in alignment_lengths] # convert to interger so max() works
+        alignments = [alignment for alignment in alignments if int(alignment[diamond_fields.index("length")]) == max(alignment_lengths)]
         filtered_alignment_dict[ORF] = alignments[0]
 
     return filtered_alignment_dict
