@@ -110,6 +110,12 @@ def main():
                 line = line.rstrip("\n").split("\t")
                 tx_name = line[bed_cols.index("name")]
 
+                # Sometimes the tx_name isn't in the spans file - this happens
+                # when only wraparound reads were output as spans and the
+                # tx in question is not wraparound. Skip the reads in this case.
+                if not tx_name in tx_class_dict:
+                    continue
+                
                 tx_class, tx_class_count = tx_class_dict[tx_name]
 
                 tx_class = int(tx_class)
