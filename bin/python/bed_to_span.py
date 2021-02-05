@@ -322,7 +322,7 @@ def count_and_rank_juncs(tx_objects):
         junc_counter[str(tx.juncs) + tx.strand] += 1
 
     # Convert counter to a dictionary of structure - juncs: (rank, count)
-    junc_ranked = {pair[0]: (rank, pair[1])
+    junc_ranked = {pair[0]: (rank + 1, pair[1])
     for rank, pair in enumerate(junc_counter.most_common())}
 
     # Add the unspliced to the junc_ranked
