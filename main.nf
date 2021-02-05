@@ -7,7 +7,6 @@ nextflow.enable.dsl=2
 include { Minimap2 } from './bin/modules/Minimap2'
 include { STAR } from './bin/modules/STAR'
 include { slide_bed } from './bin/modules/slide_bed'
-include { bed_to_span } from './bin/modules/bed_to_span'
 include { bed_elongate_illumina_reads } from './bin/modules/bed_elongate_illumina_reads'
 include { prodigal } from './bin/modules/prodigal'
 include { filter_prodigal } from './bin/modules/filter_prodigal'
@@ -15,6 +14,12 @@ include { prodigal_to_orfs_direct } from './bin/modules/prodigal_to_orfs_direct'
 include { diamond } from './bin/modules/diamond'
 include { bed_extract_representatives } from './bin/modules/bed_extract_representatives'
 include { characterize_ORFs } from './bin/modules/characterize_ORFs'
+
+// Modules with different param settings
+include { bed_to_span as bed_to_span_ILLUMINA } from './bin/modules/bed_to_span' \
+  addParams(bed_to_span_junc_reads_only: params.bed_to_span_junc_reads_only_ILLUMINA)
+include { bed_to_span as bed_to_span_NANOPORE } from './bin/modules/bed_to_span' \
+  addParams(bed_to_span_junc_reads_only: params.bed_to_span_junc_reads_only_NANOPORE)
 
 
 // Note: Add addParams(param_name: 'desired value') to end of include line to
@@ -68,7 +73,7 @@ workflow illumina {
   slide_bed(aligned.bed)
 
   // Generate spans
-  bed_to_span(slide_bed.out.slid_bed)
+  bed_to_span_ILLUMINA(slide_bed.out.slid_bed)
 
   // ------------------------------------------------------------ //
   // ORF ANALYSIS
@@ -121,7 +126,7 @@ workflow nanopore {
   slide_bed(aligned.bed)
 
   // Generate spans
-  bed_to_span(slide_bed.out.slid_bed)
+  bed_to_span_NANOPORE(slide_bed.out.slid_bed)
 
   // ------------------------------------------------------------ //
   // ORF ANALYSIS
@@ -169,6 +174,14 @@ if( (params.slide_bed_only_keep_wraparound != "yes") && (params.slide_bed_only_k
 
 if( (params.illumina_bed_elongate_only_keep_spliced_reads != "yes") && (params.illumina_bed_elongate_only_keep_spliced_reads != "no")) {
   error "params.bed_elongate_only_keep_spliced_reads must be set to 'yes' or 'no'."
+}
+
+if( (params.bed_to_span_junc_reads_only_ILLUMINA != "yes") && (params.bed_to_span_junc_reads_only_ILLUMINA != "no")) {
+  error "params.bed_to_span_junc_reads_only_ILLUMINA must be set to 'yes' or 'no'."
+}
+
+if( (params.bed_to_span_junc_reads_only_NANOPORE != "yes") && (params.bed_to_span_junc_reads_only_NANOPORE != "no")) {
+  error "params.bed_to_span_junc_reads_only_NANOPORE must be set to 'yes' or 'no'."
 }
 
 //============================================================================//

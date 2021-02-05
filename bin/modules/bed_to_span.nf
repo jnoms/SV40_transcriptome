@@ -2,6 +2,7 @@
 // Default params
 //============================================================================//
 params.out_dir = "output"
+params.bed_to_span_junc_reads_only = "no"
 
 //============================================================================//
 // Define process
@@ -23,6 +24,7 @@ process bed_to_span {
   """
   python $workflow.projectDir/bin/python/bed_to_span.py \
   -b ${in_bed} \
-  -o ${sampleID}_spans.txt
+  -o ${sampleID}_spans.txt \
+  -j ${params.bed_to_span_junc_reads_only}
   """
 }
