@@ -81,7 +81,7 @@ workflow illumina {
 
   // Extract representative transcripts from the slid bed
   slide_bed.out.slid_bed
-    .join(bed_to_span.out.spans) |\
+    .join(bed_to_span_ILLUMINA.out.spans) |\
     bed_extract_representatives
 
   // Elongate bed
@@ -107,7 +107,7 @@ workflow illumina {
   // Generate ORF report
   diamond.out.diamond_out
     .join(bed_elongate_illumina_reads.out.elongated_bed)
-    .join(bed_to_span.out.spans) |\
+    .join(bed_to_span_ILLUMINA.out.spans) |\
     characterize_ORFs
 }
 
@@ -147,7 +147,7 @@ workflow nanopore {
   // Generate ORF report
   diamond.out.diamond_out
     .join(slide_bed.out.slid_bed)
-    .join(bed_to_span.out.spans) |\
+    .join(bed_to_span_NANOPORE.out.spans) |\
     characterize_ORFs
 }
 
