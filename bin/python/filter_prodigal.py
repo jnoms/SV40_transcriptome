@@ -156,7 +156,7 @@ def main():
 
                     # Determine if it contains a splice
                     for splice_site in current_splice_sites:
-                        if start <= splice_site <= end:
+                        if start <= splice_site < end:
                             outfile.write("\t".join(line))
                             break
 

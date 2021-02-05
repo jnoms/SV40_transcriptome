@@ -318,7 +318,7 @@ def get_splice_status(start, end, bed_blocks):
     end = int(end)
 
     for block in bed_blocks:
-        if start <= block <= end:
+        if start <= block < end:
             return 1
 
     return 0
