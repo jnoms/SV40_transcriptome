@@ -1,8 +1,8 @@
-### STAR   --runMode genomeGenerate   --runThreadN 6   --genomeDir STAR_BK   --genomeFastaFiles BK_dunlop.fasta      --genomeSAindexNbases 5
+### STAR   --runMode genomeGenerate   --runThreadN 6   --genomeDir STAR_BK_x10   --genomeFastaFiles BK_dunlop_x10.fasta      --genomeSAindexNbases 5
 ### GstrandBit 32
 versionGenome	2.7.4a
 genomeType	Full
-genomeFastaFiles	BK_dunlop.fasta 
+genomeFastaFiles	BK_dunlop_x10.fasta 
 genomeSAindexNbases	5
 genomeChrBinNbits	18
 genomeSAsparseD	1
@@ -16,4 +16,4 @@ sjdbGTFfeatureExon	exon
 sjdbGTFtagExonParentTranscript	transcript_id
 sjdbGTFtagExonParentGene	gene_id
 sjdbInsertSave	Basic
-genomeFileSizes	262144 42516
+genomeFileSizes	262144 425126

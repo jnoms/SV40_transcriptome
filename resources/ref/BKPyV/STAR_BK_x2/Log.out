@@ -1,0 +1,61 @@
+STAR version=2.7.7a
+STAR compilation time,server,dir=Mon Dec 28 20:27:20 GMT 2020 :/Users/travis/build/alexdobin/travis-tests/STARcompile/source
+##### Command Line:
+STAR --runThreadN 6 --runMode genomeGenerate --genomeDir STAR_BK_x2 --genomeFastaFiles BK_dunlop_x2.fasta --genomeSAindexNbases 5
+##### Initial USER parameters from Command Line:
+###### All USER parameters from Command Line:
+runThreadN                    6     ~RE-DEFINED
+runMode                       genomeGenerate     ~RE-DEFINED
+genomeDir                     STAR_BK_x2     ~RE-DEFINED
+genomeFastaFiles              BK_dunlop_x2.fasta        ~RE-DEFINED
+genomeSAindexNbases           5     ~RE-DEFINED
+##### Finished reading parameters from all sources
+
+##### Final user re-defined parameters-----------------:
+runMode                           genomeGenerate
+runThreadN                        6
+genomeDir                         STAR_BK_x2
+genomeFastaFiles                  BK_dunlop_x2.fasta   
+genomeSAindexNbases               5
+
+-------------------------------
+##### Final effective command line:
+STAR   --runMode genomeGenerate   --runThreadN 6   --genomeDir STAR_BK_x2   --genomeFastaFiles BK_dunlop_x2.fasta      --genomeSAindexNbases 5
+----------------------------------------
+
+Number of fastq files for each mate = 1
+Finished loading and checking parameters
+--genomeDir directory created: STAR_BK_x2/
+Feb 16 14:22:28 ... starting to generate Genome files
+BK_dunlop_x2.fasta : chr # 0  "KP412983.1" chrStart: 0
+Chromosome sequence lengths: 
+KP412983.1	10306
+Genome sequence total length = 10306
+Genome size with padding = 262144
+Estimated genome size with padding and SJs: total=genome+SJ=201262144 = 262144 + 201000000
+GstrandBit=32
+Number of SA indices: 20612
+Feb 16 14:22:28 ... starting to sort Suffix Array. This may take a long time...
+Number of chunks: 6;   chunks size limit: 32976 bytes
+Feb 16 14:22:28 ... sorting Suffix Array chunks and saving them to disk...
+Writing 2864 bytes into STAR_BK_x2//SA_5 ; empty space on disk = 172649424617472 bytes ... done
+Writing 32952 bytes into STAR_BK_x2//SA_1 ; empty space on disk = 172649423568896 bytes ... done
+Writing 32672 bytes into STAR_BK_x2//SA_3 ; empty space on disk = 172649414131712 bytes ... done
+Writing 32208 bytes into STAR_BK_x2//SA_2 ; empty space on disk = 172649405743104 bytes ... done
+Writing 32408 bytes into STAR_BK_x2//SA_0 ; empty space on disk = 172649397354496 bytes ... done
+Writing 31792 bytes into STAR_BK_x2//SA_4 ; empty space on disk = 172649388965888 bytes ... done
+Feb 16 14:22:28 ... loading chunks from disk, packing SA...
+Feb 16 14:22:28 ... finished generating suffix array
+Feb 16 14:22:28 ... generating Suffix Array index
+Feb 16 14:22:28 ... completed Suffix Array index
+Feb 16 14:22:28 ... writing Genome to disk ...
+Writing 262144 bytes into STAR_BK_x2//Genome ; empty space on disk = 172649423568896 bytes ... done
+SA size in bytes: 85028
+Feb 16 14:22:28 ... writing Suffix Array to disk ...
+Writing 85028 bytes into STAR_BK_x2//SA ; empty space on disk = 172649356460032 bytes ... done
+Feb 16 14:22:28 ... writing SAindex to disk
+Writing 8 bytes into STAR_BK_x2//SAindex ; empty space on disk = 172649334439936 bytes ... done
+Writing 48 bytes into STAR_BK_x2//SAindex ; empty space on disk = 172649334439936 bytes ... done
+Writing 5971 bytes into STAR_BK_x2//SAindex ; empty space on disk = 172649334439936 bytes ... done
+Feb 16 14:22:28 ..... finished successfully
+DONE: Genome generation, EXITING
