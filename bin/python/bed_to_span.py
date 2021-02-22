@@ -5,8 +5,6 @@ import pathlib
 import os
 from collections import Counter
 import sys
-from statistics import median
-from copy import deepcopy # lets you copy an object
 
 def get_args():
     parser = argparse.ArgumentParser(description="""
@@ -63,6 +61,46 @@ def get_args():
 
     # Optional arguments
     parser.add_argument(
+        '-i',
+        '--invert_strand',
+        type=str,
+        required=False,
+        default="no",
+        help='''
+        str, options are yes or no, default is no.
+
+        If specified as yes, will invert the strand of each transcript in
+        the input BED file. This is useful because sometimes in strand-specific
+        sequencing one of the read pairs is inverted relative to the RNA
+        molecule.
+        '''
+    )
+    parser.add_argument(
+        '-p',
+        '--paired_end_input',
+        type=str,
+        required=False,
+        default="no",
+        help='''
+        str, options are yes or no, default is no.
+
+        This influences how multiple lines in a bed file with the same read name
+        are handled.
+
+        If this is set to "yes", IT IS ASSUMED THAT THERE ARE NO SUPPLEMENTARY
+        OR SECONDARY ALIGNMENTS IN THE BED FILE. With this assumption, if a
+        second instance of a read name is encountered it will be assumed
+        the bed file is formed from mapping of paired-end reads. Therefore, when
+        a read name is encountered for a second time the second read name will
+        be converted to read_name_2.
+
+        If this is set to "no", the assumption is that there are NOT paired end
+        reads in the input. If this is the case, it's assumed that the second
+        instance of the read name is a supplementary alignment. In this case,
+        the primary and secondary alignments are both tossed.
+        '''
+    )
+    parser.add_argument(
         '-j',
         '--junc_reads_only',
         type=str,
@@ -70,47 +108,22 @@ def get_args():
         default="no",
         help='''
         str, options are yes or no, default is no.
+
         If this is set to yes, only reads that have junctions will be output
         to the span file. This is helpful to reduce file sizes when only
         concerned about junctions.
         '''
     )
-    parser.add_argument(
-        '-r',
-        '--tx_representative_spans',
-        type=str,
-        required=False,
-        default="",
-        help='''
-        Path to a spans file containing representatives of each tx_class. For
-        each tx_class, the representative contains the defining junctions, but
-        the tx_start and tx_end are the MEDIAN for the transcript class.
-
-        Default: ""
-        '''
-    )
-    parser.add_argument(
-        '-s',
-        '--tx_end_binsize',
-        type=int,
-        required=False,
-        default=200,
-        help='''
-        The end position of each transcript is factored into placing a tx into
-        a tx_class. However, dRNAseq reads may have some messiness to ending
-        sites. The genome is split into bins of size tx_end_binsize - a tx
-        must end within the same bin to be classified as the same tx_class.
-
-        For Illumina reads where tx_end doesn't matter, or if you simply dont
-        want to factor in tx_end, set this number to any large number bigger
-        than the reference length.
-
-        Default: 200
-        '''
-    )
 
     args = parser.parse_args()
 
+    # Validate args
+    if args.invert_strand not in ["yes", "no"]:
+        msg = "invert_strand must be yes or no. You input {}.".format(args.invert_strand)
+        raise ValueError(msg)
+    if args.paired_end_input not in ["yes", "no"]:
+        msg = "paired_end_input must be yes or no. You input {}.".format(args.paired_end_input)
+        raise ValueError(msg)
     if args.junc_reads_only not in ["yes", "no"]:
         msg = "junc_reads_only must be yes or no. You input {}.".format(args.junc_reads_only)
         raise ValueError(msg)
@@ -234,7 +247,7 @@ def find_spans(tx_start, tx_end, blockSizes, blockStarts, tx_name):
 #------------------------------------------------------------------------------#
 # Functions for this script
 #------------------------------------------------------------------------------#
-def parse_bed_to_tx_objects(bed_path, junc_reads_only="no"):
+def parse_bed_to_tx_objects(bed_path, invert_strand="no", paired_end_input="yes", junc_reads_only="no"):
     """
     Given a path to a bed file, will parse each line and load them into a transcript
     object (one per line). Thus, returns a dictionary of tx_name:tx_object.
@@ -259,48 +272,42 @@ def parse_bed_to_tx_objects(bed_path, junc_reads_only="no"):
             if int(blockCount) < 2 and junc_reads_only == "yes":
                 continue
 
+            # Invert strand if specified
+            if invert_strand == "yes":
+                if strand == "+":
+                    strand = "-"
+                elif strand == "-":
+                    strand = "+"
+
             # Load tx_object
             tx = tx_object(name, tx_start, tx_end, strand, blockSizes, blockStarts)
 
             # Handle read names that occur more than once.
-            # Assume this is a secondary alignment and ditch
+            # If not paired end, assume this is a secondary alignment and ditch
             # the reads entirely.
-            if name in tx_objects:
+            if paired_end_input == "no" and name in tx_objects:
                 print("{} has a supplementarty alginment, so not keeping it..".format(name))
                 del tx_objects[name]
                 continue
 
+            # Otherwise assume it is a second read of a read pair
+            if paired_end_input == "yes" and name in tx_objects:
+                name += "_2"
+                tx.name = name
+
             tx_objects[name] = tx
 
     return tx_objects
-
-def get_tx_end_bin(tx_objects, tx_end_binsize = 100):
-    """
-    Input:
-        - dictionary of structure tx_name:tx_object
-
-    Output:
-        - same dictionary, but each tx_object has an added .tx_end_bin attribute.
-
-    The tx_end_bin is determined as the numeric bin that the tx_end falls within. For
-    example, if the tx_end_binsize = 100 and the transcript ends at 450, the bin would be 4.
-    If the transcript ends at 14, the bin would be 0. Bin is determined as
-    int(tx_end/tx_end_binsize) (int will round down to nearest whole number).
-
-    Note that this function modifies the input dictionary in place and doesn't return anything.
-    """
-    for tx in tx_objects.values():
-        tx_end_bin = int(int(tx.tx_end)/tx_end_binsize)
-        tx.tx_end_bin = tx_end_bin
 
 def count_and_rank_juncs(tx_objects):
     """
     Takes in a dictionary of tx_objects, and returns a dictionary of structure
     juncs: (rank, count).
 
-    Each key tx.juncs + tx.stand + tx.tx_end_bin, meaning that it takes into account
-    both the junctions, the strand, and the end bin.
+    Each key is simply the junction of a tx_object converted to a string.
     """
+
+    tx_objects = tx_objects.copy()
 
     # Count and rank junction classes
     junc_counter = Counter()
@@ -309,19 +316,18 @@ def count_and_rank_juncs(tx_objects):
 
         # If unspliced, reserve so it doesn't get ranked
         if tx.juncs == []:
-            unspliced_counter["u" + tx.strand] += 1
+            unspliced_counter[str(tx.juncs) + tx.strand] += 1
             continue
 
-        junc_counter[str(tx.juncs) + tx.strand + str(tx.tx_end_bin)] += 1
+        junc_counter[str(tx.juncs) + tx.strand] += 1
 
     # Convert counter to a dictionary of structure - juncs: (rank, count)
     junc_ranked = {pair[0]: (rank + 1, pair[1])
     for rank, pair in enumerate(junc_counter.most_common())}
 
     # Add the unspliced to the junc_ranked
-    for unspliced_type, count in unspliced_counter.items():
-        #unspliced_type is u + strand (e.g. u+ or u-)
-        junc_ranked[unspliced_type] = (unspliced_type, count)
+    for unspliced, count in unspliced_counter.items():
+        junc_ranked[unspliced] = ("u" + unspliced[-1], count)
 
     return junc_ranked
 
@@ -329,113 +335,18 @@ def load_rank_and_count(tx_objects, junction_ranks):
     """
     Loads the rank (aka tx_class) and count of each tx_class to
     each transcript object.
-
-    Note that this modifies the input dictionary in place and doesn't
-    return anything.
     """
+    tx_objects = tx_objects.copy()
     for name, tx in tx_objects.items():
 
-        # If the tx isn't unspliced:
-        if tx.juncs != []:
-            rank, count = junction_ranks[str(tx.juncs) + tx.strand + str(tx.tx_end_bin)]
-            tx.tx_class = rank
-            tx.tx_class_count = count
-            tx_objects[name] = tx
-        # No juncs, so just look up count based on strand
-        else:
-            rank, count = junction_ranks["u" + tx.strand]
-            tx.tx_class = rank
-            tx.tx_class_count = count
-            tx_objects[name] = tx
+        rank, count = junction_ranks[str(tx.juncs) + tx.strand]
 
-def alter_spans_begining_end(spans, new, begining=True):
-    """
-    Inputs:
-        - spans: list of tuples, where each tupe is (start, end, span_type)
-        - new: New start of the first span or end of the last span
-        - begining: if True, modifies start of first span. If False,
-        modifies to the end of the last span.
+        tx.tx_class = rank
+        tx.tx_class_count = count
 
-    Output:
-        - modified spans
+        tx_objects[name] = tx
 
-    Note that this copies the input and outputs a new list
-    """
-    spans = spans.copy()
-    if begining == True:
-        start, end, span_type = spans[0]
-        spans[0] = (new, end, span_type)
-        return spans
-
-    elif begining == False:
-        start, end, span_type = spans[-1]
-        spans[-1] = (start, new, span_type)
-        return spans
-
-def get_tx_class_reps(tx_objects):
-    """
-    Input:
-        - tx_objects: Dictionary of structure tx_name:tx_object
-
-    Output:
-        -tx_class_reps: One representative per tx_class. The representative
-        will have the MEDIAN tx_start and MEDIAN tx_end of the tx_class, with
-        the spans corrected accordingly.
-    """
-
-    # Find starts/ends for each tx_class, and save one tx as representative.
-    # The representative will be altered to have the median start/end later.
-    tx_class_reps = dict()
-    tx_starts = dict()
-    tx_ends = dict()
-    for tx_name, tx in tx_objects.items():
-
-        # Starts
-        if not tx.tx_class in tx_starts:
-            tx_starts[tx.tx_class] = []
-        tx_starts[tx.tx_class].append(int(tx.tx_start))
-
-        # Ends
-        if not tx.tx_class in tx_ends:
-            tx_ends[tx.tx_class] = []
-        tx_ends[tx.tx_class].append(int(tx.tx_end))
-
-        # Representative
-        if not tx.tx_class in tx_class_reps:
-            tx_class_reps[tx.tx_class] = deepcopy(tx) # avoid altering the original
-
-
-    # Find median start/end for each tx_class
-    tx_start_medians = dict()
-    tx_end_medians = dict()
-    for tx_class, starts in tx_starts.items():
-        med = int(median(starts))
-        tx_start_medians[tx_class] = med
-    for tx_class, ends in tx_ends.items():
-        med = int(median(ends))
-        tx_end_medians[tx_class] = med
-
-    # Adjust median for each representative
-    output_tx = dict()
-    for tx_class in tx_start_medians:
-        med_start = tx_start_medians[tx_class]
-        med_end = tx_end_medians[tx_class]
-        tx_rep = tx_class_reps[tx_class]
-
-        # Correct the start
-        tx_rep.tx_start = med_start
-        tx_rep.spans = alter_spans_begining_end(tx_rep.spans, med_start, begining=True)
-
-        # Correct the end
-        tx_rep.tx_end = med_end
-        tx_rep.spans = alter_spans_begining_end(tx_rep.spans, med_end, begining=False)
-
-        # Remove the now-innacurate other fields
-        tx_rep.blockSizes = ""
-        tx_rep.blockStarts = ""
-        output_tx[tx_class] = tx_rep
-
-    return output_tx
+    return tx_objects
 
 def write_tx_spans(in_tx_dict, outfile_path):
 
@@ -473,32 +384,26 @@ def main():
     args = get_args()
     bed_path = args.bed_path
     output_spans = args.output_spans
+    invert_strand = args.invert_strand
+    paired_end_input = args.paired_end_input
     junc_reads_only = args.junc_reads_only
-    tx_representative_spans = args.tx_representative_spans
-    tx_end_binsize = args.tx_end_binsize
 
     # Main
     #--------------------------------------------------------------------#
     print("{}: Starting script".format(sys.argv[0]))
 
     # Parse the bed file
-    tx_objects = parse_bed_to_tx_objects(bed_path, junc_reads_only)
-
-    # Find tx_end bin for each transcript
-    get_tx_end_bin(tx_objects, tx_end_binsize)
+    tx_objects = parse_bed_to_tx_objects(bed_path, invert_strand, paired_end_input, junc_reads_only)
 
     # Count and rank the junctions... make new dict of structure
     # junc: (rank, count)
     junction_ranks = count_and_rank_juncs(tx_objects)
 
     # Load rank (I'll call it tx_class) and count (tx_class_count) to each tx
-    load_rank_and_count(tx_objects, junction_ranks)
-    write_tx_spans(tx_objects, output_spans)
+    tx_objects = load_rank_and_count(tx_objects, junction_ranks)
 
-    # Find representative transcripts if specified
-    if tx_representative_spans != "":
-        tx_reps = get_tx_class_reps(tx_objects)
-        write_tx_spans(tx_reps, tx_representative_spans)
+    # Write to output file.
+    write_tx_spans(tx_objects, output_spans)
 
     print("{}: Finished".format(sys.argv[0]))
 
