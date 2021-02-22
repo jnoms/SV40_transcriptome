@@ -1,0 +1,61 @@
+STAR version=2.7.7a
+STAR compilation time,server,dir=Mon Dec 28 20:27:20 GMT 2020 :/Users/travis/build/alexdobin/travis-tests/STARcompile/source
+##### Command Line:
+STAR --runThreadN 6 --runMode genomeGenerate --genomeDir SV40_100_x20 --genomeFastaFiles SV40_100_x20.fasta --genomeSAindexNbases 5
+##### Initial USER parameters from Command Line:
+###### All USER parameters from Command Line:
+runThreadN                    6     ~RE-DEFINED
+runMode                       genomeGenerate     ~RE-DEFINED
+genomeDir                     SV40_100_x20     ~RE-DEFINED
+genomeFastaFiles              SV40_100_x20.fasta        ~RE-DEFINED
+genomeSAindexNbases           5     ~RE-DEFINED
+##### Finished reading parameters from all sources
+
+##### Final user re-defined parameters-----------------:
+runMode                           genomeGenerate
+runThreadN                        6
+genomeDir                         SV40_100_x20
+genomeFastaFiles                  SV40_100_x20.fasta   
+genomeSAindexNbases               5
+
+-------------------------------
+##### Final effective command line:
+STAR   --runMode genomeGenerate   --runThreadN 6   --genomeDir SV40_100_x20   --genomeFastaFiles SV40_100_x20.fasta      --genomeSAindexNbases 5
+----------------------------------------
+
+Number of fastq files for each mate = 1
+Finished loading and checking parameters
+--genomeDir directory created: SV40_100_x20/
+Feb 22 16:53:33 ... starting to generate Genome files
+SV40_100_x20.fasta : chr # 0  "NC_001669.1" chrStart: 0
+Chromosome sequence lengths: 
+NC_001669.1	104860
+Genome sequence total length = 104860
+Genome size with padding = 262144
+Estimated genome size with padding and SJs: total=genome+SJ=201262144 = 262144 + 201000000
+GstrandBit=32
+Number of SA indices: 209720
+Feb 22 16:53:33 ... starting to sort Suffix Array. This may take a long time...
+Number of chunks: 6;   chunks size limit: 335552 bytes
+Feb 22 16:53:33 ... sorting Suffix Array chunks and saving them to disk...
+Writing 28640 bytes into SV40_100_x20//SA_5 ; empty space on disk = 170086682853376 bytes ... done
+Writing 316328 bytes into SV40_100_x20//SA_4 ; empty space on disk = 170086675513344 bytes ... done
+Writing 334080 bytes into SV40_100_x20//SA_2 ; empty space on disk = 170086593724416 bytes ... done
+Writing 332640 bytes into SV40_100_x20//SA_1 ; empty space on disk = 170086507741184 bytes ... done
+Writing 333112 bytes into SV40_100_x20//SA_3 ; empty space on disk = 170086421757952 bytes ... done
+Writing 332960 bytes into SV40_100_x20//SA_0 ; empty space on disk = 170086335774720 bytes ... done
+Feb 22 16:53:34 ... loading chunks from disk, packing SA...
+Feb 22 16:53:34 ... finished generating suffix array
+Feb 22 16:53:34 ... generating Suffix Array index
+Feb 22 16:53:34 ... completed Suffix Array index
+Feb 22 16:53:34 ... writing Genome to disk ...
+Writing 262144 bytes into SV40_100_x20//Genome ; empty space on disk = 170086681804800 bytes ... done
+SA size in bytes: 865098
+Feb 22 16:53:34 ... writing Suffix Array to disk ...
+Writing 865098 bytes into SV40_100_x20//SA ; empty space on disk = 170086614695936 bytes ... done
+Feb 22 16:53:34 ... writing SAindex to disk
+Writing 8 bytes into SV40_100_x20//SAindex ; empty space on disk = 170086392397824 bytes ... done
+Writing 48 bytes into SV40_100_x20//SAindex ; empty space on disk = 170086392397824 bytes ... done
+Writing 5971 bytes into SV40_100_x20//SAindex ; empty space on disk = 170086392397824 bytes ... done
+Feb 22 16:53:34 ..... finished successfully
+DONE: Genome generation, EXITING
