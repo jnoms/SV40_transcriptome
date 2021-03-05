@@ -5,7 +5,7 @@ nextflow.enable.dsl=2
 // Set up modules
 //============================================================================//
 include { trim_galore } from './bin/modules/trim_galore'
-include { STAR } from './bin/modules/STAR'
+include { reverse_complement_read1 } from './bin/modules/reverse_complement_read1'
 
 
 // Modules with different param settings
@@ -41,6 +41,10 @@ workflow {
 
   // Trim with trim_galore
   trim_galore(input_ch)
+
+  // Rev comp read1
+  trim_galore(input_ch).out.reads |\
+    reverse_complement_read1
 
 
 }
