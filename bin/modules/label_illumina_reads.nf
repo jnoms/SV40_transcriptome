@@ -32,7 +32,6 @@ process label_illumina_reads {
   -n 2
 
   # Concatenate them - this is the output!
-  cat ${sampleID}_r1_labeled.fq.gz ${sampleID}_r2_labeled.fq.gz  >
-    ${sampleID}.fq.gz
+  cat ${sampleID}_r1_labeled.fq.gz ${sampleID}_r2_labeled.fq.gz  > ${sampleID}.fq.gz
   """
 }
