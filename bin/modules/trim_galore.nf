@@ -19,7 +19,7 @@ process trim_galore {
   output:
   tuple val(sampleID),
     file("trimmed/${sampleID}_r1.fastq.gz"),
-    file("trimmed/${sampleID}_r2.fastq.gz")
+    file("trimmed/${sampleID}_r2.fastq.gz"),
     emit: reads
 
   tuple val(sampleID),
