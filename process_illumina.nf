@@ -6,6 +6,7 @@ nextflow.enable.dsl=2
 //============================================================================//
 include { trim_galore } from './bin/modules/trim_galore'
 include { reverse_complement_read1 } from './bin/modules/reverse_complement_read1'
+include { label_illumina_reads } from './bin/modules/label_illumina_reads'
 
 
 // Modules with different param settings
@@ -45,6 +46,9 @@ workflow {
   // Rev comp read1
   trim_galore.out.reads |\
     reverse_complement_read1
+
+  // Label read1 and read2 with _1 and _2
+  label_illumina_reads(reverse_complement_read1.out.reads)
 
 
 }
