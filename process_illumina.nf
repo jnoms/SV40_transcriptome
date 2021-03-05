@@ -43,7 +43,7 @@ workflow {
   trim_galore(input_ch)
 
   // Rev comp read1
-  trim_galore(input_ch).out.reads |\
+  trim_galore.out.reads |\
     reverse_complement_read1
 
 
