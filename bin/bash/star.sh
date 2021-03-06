@@ -35,6 +35,11 @@ usage() {
 
         -t <THREADS> [1]
             Number of computing threads available.
+
+        -j STAR_junction_file [""]
+            If the STAR-generated junction file is desired, will extract it
+            from the working directory rather than deleting it. Enter the
+            desired file name.
         "
 }
 
@@ -45,7 +50,7 @@ if [ $# -le 3 ] ; then
 fi
 
 #Setting input
-while getopts i:r:o:b:P:t: option ; do
+while getopts i:r:o:b:P:t:j: option ; do
         case "${option}"
         in
                 i) INPUT_FASTQ=${OPTARG};;
@@ -54,6 +59,7 @@ while getopts i:r:o:b:P:t: option ; do
                 b) OUT_BED=${OPTARG};;
                 P) ONLY_PRIMARY_READS=${OPTARG};;
                 t) THREADS=${OPTARG};;
+                j) STAR_junction_file=${OPTARG};;
         esac
 done
 
@@ -63,6 +69,7 @@ done
 OUT_BED=${OUT_BED:-""}
 ONLY_PRIMARY_READS=${ONLY_PRIMARY_READS:-"yes"}
 THREADS=${THREADS:-1}
+STAR_junction_file=${STAR_junction_file:-""}
 
 #------------------------------------------------------------------------------#
 # Validate inputs
@@ -119,6 +126,12 @@ $UNZIP_COMMAND \
 
 # Extract just the bam
 mv $(dirname $OUT_BAM)/${SAMPLE}_working/${SAMPLE}*bam ${OUT_BAM}_unsorted
+
+# If the STAR-generated junction file is desired, also extract it
+if [[ $STAR_junction_file != "" ]] ; then
+  mkdir -p $(dirname $STAR_junction_file)
+  mv $(dirname $OUT_BAM)/${SAMPLE}_working/${SAMPLE}_SJ.out.tab $STAR_junction_file
+fi
 
 # If no secondary reads are desired, remove non-primary alignments
 if [[ $ONLY_PRIMARY_READS == "yes" ]] ; then
