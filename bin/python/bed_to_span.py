@@ -61,46 +61,6 @@ def get_args():
 
     # Optional arguments
     parser.add_argument(
-        '-i',
-        '--invert_strand',
-        type=str,
-        required=False,
-        default="no",
-        help='''
-        str, options are yes or no, default is no.
-
-        If specified as yes, will invert the strand of each transcript in
-        the input BED file. This is useful because sometimes in strand-specific
-        sequencing one of the read pairs is inverted relative to the RNA
-        molecule.
-        '''
-    )
-    parser.add_argument(
-        '-p',
-        '--paired_end_input',
-        type=str,
-        required=False,
-        default="no",
-        help='''
-        str, options are yes or no, default is no.
-
-        This influences how multiple lines in a bed file with the same read name
-        are handled.
-
-        If this is set to "yes", IT IS ASSUMED THAT THERE ARE NO SUPPLEMENTARY
-        OR SECONDARY ALIGNMENTS IN THE BED FILE. With this assumption, if a
-        second instance of a read name is encountered it will be assumed
-        the bed file is formed from mapping of paired-end reads. Therefore, when
-        a read name is encountered for a second time the second read name will
-        be converted to read_name_2.
-
-        If this is set to "no", the assumption is that there are NOT paired end
-        reads in the input. If this is the case, it's assumed that the second
-        instance of the read name is a supplementary alignment. In this case,
-        the primary and secondary alignments are both tossed.
-        '''
-    )
-    parser.add_argument(
         '-j',
         '--junc_reads_only',
         type=str,
@@ -118,12 +78,6 @@ def get_args():
     args = parser.parse_args()
 
     # Validate args
-    if args.invert_strand not in ["yes", "no"]:
-        msg = "invert_strand must be yes or no. You input {}.".format(args.invert_strand)
-        raise ValueError(msg)
-    if args.paired_end_input not in ["yes", "no"]:
-        msg = "paired_end_input must be yes or no. You input {}.".format(args.paired_end_input)
-        raise ValueError(msg)
     if args.junc_reads_only not in ["yes", "no"]:
         msg = "junc_reads_only must be yes or no. You input {}.".format(args.junc_reads_only)
         raise ValueError(msg)
@@ -247,7 +201,7 @@ def find_spans(tx_start, tx_end, blockSizes, blockStarts, tx_name):
 #------------------------------------------------------------------------------#
 # Functions for this script
 #------------------------------------------------------------------------------#
-def parse_bed_to_tx_objects(bed_path, invert_strand="no", paired_end_input="yes", junc_reads_only="no"):
+def parse_bed_to_tx_objects(bed_path, junc_reads_only="no"):
     """
     Given a path to a bed file, will parse each line and load them into a transcript
     object (one per line). Thus, returns a dictionary of tx_name:tx_object.
@@ -272,28 +226,15 @@ def parse_bed_to_tx_objects(bed_path, invert_strand="no", paired_end_input="yes"
             if int(blockCount) < 2 and junc_reads_only == "yes":
                 continue
 
-            # Invert strand if specified
-            if invert_strand == "yes":
-                if strand == "+":
-                    strand = "-"
-                elif strand == "-":
-                    strand = "+"
-
             # Load tx_object
             tx = tx_object(name, tx_start, tx_end, strand, blockSizes, blockStarts)
 
             # Handle read names that occur more than once.
-            # If not paired end, assume this is a secondary alignment and ditch
-            # the reads entirely.
-            if paired_end_input == "no" and name in tx_objects:
+            # Assume this is a secondary alignment and ditch the reads entirely.
+            if name in tx_objects:
                 print("{} has a supplementarty alginment, so not keeping it..".format(name))
                 del tx_objects[name]
                 continue
-
-            # Otherwise assume it is a second read of a read pair
-            if paired_end_input == "yes" and name in tx_objects:
-                name += "_2"
-                tx.name = name
 
             tx_objects[name] = tx
 
@@ -384,8 +325,6 @@ def main():
     args = get_args()
     bed_path = args.bed_path
     output_spans = args.output_spans
-    invert_strand = args.invert_strand
-    paired_end_input = args.paired_end_input
     junc_reads_only = args.junc_reads_only
 
     # Main
@@ -393,7 +332,7 @@ def main():
     print("{}: Starting script".format(sys.argv[0]))
 
     # Parse the bed file
-    tx_objects = parse_bed_to_tx_objects(bed_path, invert_strand, paired_end_input, junc_reads_only)
+    tx_objects = parse_bed_to_tx_objects(bed_path, junc_reads_only)
 
     # Count and rank the junctions... make new dict of structure
     # junc: (rank, count)
