@@ -1,0 +1,61 @@
+STAR version=2.7.7a
+STAR compilation time,server,dir=Mon Dec 28 20:27:20 GMT 2020 :/Users/travis/build/alexdobin/travis-tests/STARcompile/source
+##### Command Line:
+STAR --runThreadN 6 --runMode genomeGenerate --genomeDir MCPyV --genomeFastaFiles MCPyV.fasta --genomeSAindexNbases 5
+##### Initial USER parameters from Command Line:
+###### All USER parameters from Command Line:
+runThreadN                    6     ~RE-DEFINED
+runMode                       genomeGenerate     ~RE-DEFINED
+genomeDir                     MCPyV     ~RE-DEFINED
+genomeFastaFiles              MCPyV.fasta        ~RE-DEFINED
+genomeSAindexNbases           5     ~RE-DEFINED
+##### Finished reading parameters from all sources
+
+##### Final user re-defined parameters-----------------:
+runMode                           genomeGenerate
+runThreadN                        6
+genomeDir                         MCPyV
+genomeFastaFiles                  MCPyV.fasta   
+genomeSAindexNbases               5
+
+-------------------------------
+##### Final effective command line:
+STAR   --runMode genomeGenerate   --runThreadN 6   --genomeDir MCPyV   --genomeFastaFiles MCPyV.fasta      --genomeSAindexNbases 5
+----------------------------------------
+
+Number of fastq files for each mate = 1
+Finished loading and checking parameters
+--genomeDir directory created: MCPyV/
+Mar 20 12:23:18 ... starting to generate Genome files
+MCPyV.fasta : chr # 0  "NC_010277.2" chrStart: 0
+Chromosome sequence lengths: 
+NC_010277.2	5387
+Genome sequence total length = 5387
+Genome size with padding = 262144
+Estimated genome size with padding and SJs: total=genome+SJ=201262144 = 262144 + 201000000
+GstrandBit=32
+Number of SA indices: 10774
+Mar 20 12:23:18 ... starting to sort Suffix Array. This may take a long time...
+Number of chunks: 6;   chunks size limit: 17232 bytes
+Mar 20 12:23:18 ... sorting Suffix Array chunks and saving them to disk...
+Writing 1208 bytes into MCPyV//SA_5 ; empty space on disk = 5416481193984 bytes ... done
+Writing 17168 bytes into MCPyV//SA_0 ; empty space on disk = 5416480145408 bytes ...Writing 17072 bytes into MCPyV//SA_1 ; empty space on disk = 5416474902528 bytes ...Writing 17224 bytes into MCPyV//SA_3 ; empty space on disk = 5416469659648 bytes ... done
+Writing 17224 bytes into MCPyV//SA_3 ; empty space on disk = 5416469659648 bytes ... done
+Writing 16480 bytes into MCPyV//SA_4 ; empty space on disk = 5416464416768 bytes ... done
+ done
+Writing 17040 bytes into MCPyV//SA_2 ; empty space on disk = 5416459173888 bytes ... done
+Mar 20 12:23:18 ... loading chunks from disk, packing SA...
+Mar 20 12:23:18 ... finished generating suffix array
+Mar 20 12:23:18 ... generating Suffix Array index
+Mar 20 12:23:18 ... completed Suffix Array index
+Mar 20 12:23:18 ... writing Genome to disk ...
+Writing 262144 bytes into MCPyV//Genome ; empty space on disk = 5416480145408 bytes ... done
+SA size in bytes: 44446
+Mar 20 12:23:18 ... writing Suffix Array to disk ...
+Writing 44446 bytes into MCPyV//SA ; empty space on disk = 5416413036544 bytes ... done
+Mar 20 12:23:18 ... writing SAindex to disk
+Writing 8 bytes into MCPyV//SAindex ; empty space on disk = 5416401502208 bytes ... done
+Writing 48 bytes into MCPyV//SAindex ; empty space on disk = 5416401502208 bytes ... done
+Writing 5971 bytes into MCPyV//SAindex ; empty space on disk = 5416401502208 bytes ... done
+Mar 20 12:23:18 ..... finished successfully
+DONE: Genome generation, EXITING
