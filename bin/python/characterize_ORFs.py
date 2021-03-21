@@ -363,6 +363,14 @@ def main():
     ORF_object_dict = dict()
     for tx_name, ORF_alignments in diamond_results.items():
 
+        # Sometimes there is no span entry for a tx that was processed
+        # though DIAMOND. This would be the case for dRNAseq transcripts that
+        # are not supported by illumina (if this is specified in bed_to_span.py),
+        # where those tx would be put into the unsupported span file. The DIAMOND
+        # input was generated prior to this. To address this, skip those transcripts.
+        if not tx_name in tx_class_dict:
+            continue
+
         # Parse bed blocks and tx_class for each transcript
         bed_blocks = bed_blocks_dict[tx_name]
         tx_class, tx_class_count = tx_class_dict[tx_name]
