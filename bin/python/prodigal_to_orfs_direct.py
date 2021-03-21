@@ -150,6 +150,11 @@ def parse_prodigal(prodigal_path, pos_strand_only=True):
                 if strand == "-":
                     continue
 
+            # Skip ORFs that run in from the 5' edge
+            start_codon = line.split("\t")[6]
+            if start_codon == "Edge" and begining < 5:
+                continue
+
             # Write to orf dictionary
             accesion_to_orfs[current_accession].append((begining, end, strand))
 

@@ -28,6 +28,7 @@ process prodigal {
   $workflow.projectDir/bin/bash/prodigal.sh \
   -i ${in_fasta} \
   -o ${sampleID}_prodigal.txt.gz \
-  -c "TRUE"
+  -c "TRUE" \
+  -e 0
   """
 }
