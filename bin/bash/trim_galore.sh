@@ -33,7 +33,7 @@ usage() {
         #OPTIONAL
         -2 <READ2>
             Path to second fastq, should be paired with READ1.
-        -3 <READ2_out>
+        -4 <READ2_out>
             Name of the output read2 file.
         -j <CORES> [1]
             Desired number of cores. Don't go past 4.
