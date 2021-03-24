@@ -1,0 +1,62 @@
+STAR version=2.7.7a
+STAR compilation time,server,dir=Mon Dec 28 20:27:20 GMT 2020 :/Users/travis/build/alexdobin/travis-tests/STARcompile/source
+##### Command Line:
+STAR --runThreadN 6 --runMode genomeGenerate --genomeDir HPyV7_x2 --genomeFastaFiles HPyV7_x2.fasta --genomeSAindexNbases 5
+##### Initial USER parameters from Command Line:
+###### All USER parameters from Command Line:
+runThreadN                    6     ~RE-DEFINED
+runMode                       genomeGenerate     ~RE-DEFINED
+genomeDir                     HPyV7_x2     ~RE-DEFINED
+genomeFastaFiles              HPyV7_x2.fasta        ~RE-DEFINED
+genomeSAindexNbases           5     ~RE-DEFINED
+##### Finished reading parameters from all sources
+
+##### Final user re-defined parameters-----------------:
+runMode                           genomeGenerate
+runThreadN                        6
+genomeDir                         HPyV7_x2
+genomeFastaFiles                  HPyV7_x2.fasta   
+genomeSAindexNbases               5
+
+-------------------------------
+##### Final effective command line:
+STAR   --runMode genomeGenerate   --runThreadN 6   --genomeDir HPyV7_x2   --genomeFastaFiles HPyV7_x2.fasta      --genomeSAindexNbases 5
+----------------------------------------
+
+Number of fastq files for each mate = 1
+Finished loading and checking parameters
+--genomeDir directory created: HPyV7_x2/
+Mar 24 10:06:08 ... starting to generate Genome files
+HPyV7_x2.fasta : chr # 0  "NC_014407.1" chrStart: 0
+Chromosome sequence lengths: 
+NC_014407.1	9904
+Genome sequence total length = 9904
+Genome size with padding = 262144
+Estimated genome size with padding and SJs: total=genome+SJ=201262144 = 262144 + 201000000
+GstrandBit=32
+Number of SA indices: 19808
+Mar 24 10:06:08 ... starting to sort Suffix Array. This may take a long time...
+Number of chunks: 6;   chunks size limit: 31688 bytes
+Mar 24 10:06:08 ... sorting Suffix Array chunks and saving them to disk...
+Writing 1824 bytes into HPyV7_x2//SA_5 ; empty space on disk = 3871089885184 bytes ... done
+Writing 31448 bytes into HPyV7_x2//SA_0 ; empty space on disk = 3871088836608 bytes ... done
+Writing 31664 bytes into HPyV7_x2//SA_2 ; empty space on disk = 3871080448000 bytes ... done
+ done
+Writing 31216 bytes into HPyV7_x2//SA_3 ; empty space on disk = 3871072059392 bytes ... done
+Writing 30624 bytes into HPyV7_x2//SA_4 ; empty space on disk = 3871063670784 bytes ...Writing 31688 bytes into HPyV7_x2//SA_1 ; empty space on disk = 3871055282176 bytes ... done
+ done
+Mar 24 10:06:08 ... loading chunks from disk, packing SA...
+Mar 24 10:06:08 ... finished generating suffix array
+Mar 24 10:06:08 ... generating Suffix Array index
+Mar 24 10:06:08 ... completed Suffix Array index
+Mar 24 10:06:08 ... writing Genome to disk ...
+Writing 262144 bytes into HPyV7_x2//Genome ; empty space on disk = 3871088836608 bytes ... done
+SA size in bytes: 81711
+Mar 24 10:06:08 ... writing Suffix Array to disk ...
+Writing 81711 bytes into HPyV7_x2//SA ; empty space on disk = 3871021727744 bytes ... done
+Mar 24 10:06:08 ... writing SAindex to disk
+Writing 8 bytes into HPyV7_x2//SAindex ; empty space on disk = 3871000756224 bytes ... done
+Writing 48 bytes into HPyV7_x2//SAindex ; empty space on disk = 3871000756224 bytes ... done
+Writing 5971 bytes into HPyV7_x2//SAindex ; empty space on disk = 3871000756224 bytes ... done
+Mar 24 10:06:08 ..... finished successfully
+DONE: Genome generation, EXITING
