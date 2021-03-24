@@ -34,7 +34,7 @@ process bed_to_span {
   -b ${in_bed} \
   -o ${sampleID}_spans.txt \
   -j ${params.bed_to_span_junc_reads_only} \
-  -i ${params.bed_to_span_illumina_spans} \
+  -i "${params.bed_to_span_illumina_spans}" \
   -g ${params.n_genomes} \
   -u ${params.bed_to_span_n_illumina_junctions} \
   -l ${params.genome_length} \
