@@ -39,7 +39,8 @@ process bam_coverage {
   # Split to forward and reverse
   samtools view -bh -F 16 -@ ${task.cpus} \
   -o ${sampleID}_slid_f.bam_tmp \
-  -U ${sampleID}_slid_r.bam_tmp
+  -U ${sampleID}_slid_r.bam_tmp \
+  ${sampleID}_slid.bam && rm ${sampleID}_slid.bam
 
   # Sort and index
   samtools sort -@ ${task.cpus} \
