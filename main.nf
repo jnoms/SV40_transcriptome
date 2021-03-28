@@ -14,6 +14,7 @@ include { prodigal_to_orfs_direct } from './bin/modules/prodigal_to_orfs_direct'
 include { diamond } from './bin/modules/diamond'
 include { bed_extract_representatives } from './bin/modules/bed_extract_representatives'
 include { characterize_ORFs } from './bin/modules/characterize_ORFs'
+include { bam_coverage } from './bin/modules/bam_coverage'
 
 // Modules with different param settings
 include { bed_to_span as bed_to_span_ILLUMINA } from './bin/modules/bed_to_span' \
@@ -75,6 +76,9 @@ workflow illumina {
   // Generate spans
   bed_to_span_ILLUMINA(slide_bed.out.slid_bed)
 
+  // Calculate coverage
+  bam_coverage(aligned.bam)
+
   // ------------------------------------------------------------ //
   // ORF ANALYSIS
   // ------------------------------------------------------------ //
@@ -127,6 +131,9 @@ workflow nanopore {
 
   // Generate spans
   bed_to_span_NANOPORE(slide_bed.out.slid_bed)
+
+  // Calculate coverage
+  bam_coverage(aligned.bam)
 
   // ------------------------------------------------------------ //
   // ORF ANALYSIS
