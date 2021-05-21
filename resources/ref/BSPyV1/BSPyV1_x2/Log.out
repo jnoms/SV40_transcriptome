@@ -1,0 +1,62 @@
+STAR version=2.7.7a
+STAR compilation time,server,dir=Mon Dec 28 20:27:20 GMT 2020 :/Users/travis/build/alexdobin/travis-tests/STARcompile/source
+##### Command Line:
+STAR --runThreadN 6 --runMode genomeGenerate --genomeDir BSPyV1_x2 --genomeFastaFiles BSPyV1_x2.fasta --genomeSAindexNbases 5
+##### Initial USER parameters from Command Line:
+###### All USER parameters from Command Line:
+runThreadN                    6     ~RE-DEFINED
+runMode                       genomeGenerate     ~RE-DEFINED
+genomeDir                     BSPyV1_x2     ~RE-DEFINED
+genomeFastaFiles              BSPyV1_x2.fasta        ~RE-DEFINED
+genomeSAindexNbases           5     ~RE-DEFINED
+##### Finished reading parameters from all sources
+
+##### Final user re-defined parameters-----------------:
+runMode                           genomeGenerate
+runThreadN                        6
+genomeDir                         BSPyV1_x2
+genomeFastaFiles                  BSPyV1_x2.fasta   
+genomeSAindexNbases               5
+
+-------------------------------
+##### Final effective command line:
+STAR   --runMode genomeGenerate   --runThreadN 6   --genomeDir BSPyV1_x2   --genomeFastaFiles BSPyV1_x2.fasta      --genomeSAindexNbases 5
+----------------------------------------
+
+Number of fastq files for each mate = 1
+Finished loading and checking parameters
+--genomeDir directory exists and will be overwritten: BSPyV1_x2/
+May 21 11:00:37 ... starting to generate Genome files
+BSPyV1_x2.fasta : chr # 0  "LN846618.1" chrStart: 0
+Chromosome sequence lengths: 
+LN846618.1	10842
+Genome sequence total length = 10842
+Genome size with padding = 262144
+Estimated genome size with padding and SJs: total=genome+SJ=201262144 = 262144 + 201000000
+GstrandBit=32
+Number of SA indices: 21684
+May 21 11:00:37 ... starting to sort Suffix Array. This may take a long time...
+Number of chunks: 6;   chunks size limit: 34688 bytes
+May 21 11:00:37 ... sorting Suffix Array chunks and saving them to disk...
+Writing 4136 bytes into BSPyV1_x2//SA_5 ; empty space on disk = 4758367633408 bytes ... done
+Writing 32456 bytes into BSPyV1_x2//SA_4 ; empty space on disk = 4758365536256 bytes ... done
+Writing 34104 bytes into BSPyV1_x2//SA_0 ; empty space on disk = 4758357147648 bytes ... done
+ done
+Writing 34088 bytes into BSPyV1_x2//SA_1 ; empty space on disk = 4758347710464 bytes ...Writing 34280 bytes into BSPyV1_x2//SA_3 ; empty space on disk = 4758338273280 bytes ...Writing 34280 bytes into BSPyV1_x2//SA_3 ; empty space on disk = 4758338273280 bytes ... done
+Writing 34408 bytes into BSPyV1_x2//SA_2 ; empty space on disk = 4758328836096 bytes ...Writing 34408 bytes into BSPyV1_x2//SA_2 ; empty space on disk = 4758328836096 bytes ... done
+ done
+May 21 11:00:37 ... loading chunks from disk, packing SA...
+May 21 11:00:37 ... finished generating suffix array
+May 21 11:00:37 ... generating Suffix Array index
+May 21 11:00:37 ... completed Suffix Array index
+May 21 11:00:37 ... writing Genome to disk ...
+Writing 262144 bytes into BSPyV1_x2//Genome ; empty space on disk = 4758366584832 bytes ... done
+SA size in bytes: 89450
+May 21 11:00:37 ... writing Suffix Array to disk ...
+Writing 89450 bytes into BSPyV1_x2//SA ; empty space on disk = 4758299475968 bytes ... done
+May 21 11:00:37 ... writing SAindex to disk
+Writing 8 bytes into BSPyV1_x2//SAindex ; empty space on disk = 4758276407296 bytes ... done
+Writing 48 bytes into BSPyV1_x2//SAindex ; empty space on disk = 4758276407296 bytes ... done
+Writing 5971 bytes into BSPyV1_x2//SAindex ; empty space on disk = 4758276407296 bytes ... done
+May 21 11:00:37 ..... finished successfully
+DONE: Genome generation, EXITING
