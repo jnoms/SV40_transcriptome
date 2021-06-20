@@ -7,6 +7,7 @@ params.bed_to_span_illumina_spans = ""
 params.n_genomes = 1
 params.bed_to_span_n_illumina_junctions = 5
 params.genome_length = 0
+params.bed_to_span_keep_potential_duplicates = "no"
 
 //============================================================================//
 // Define process
@@ -38,7 +39,8 @@ process bed_to_span {
   -g ${params.n_genomes} \
   -u ${params.bed_to_span_n_illumina_junctions} \
   -l ${params.genome_length} \
-  -x ${sampleID}_UNSUPPORTED_spans.txt
+  -x ${sampleID}_UNSUPPORTED_spans.txt \
+  -d ${params.bed_to_span_keep_potential_duplicates}
 
   # Make an empty output file if not specified
   # Ideally, would make this an optional output...
