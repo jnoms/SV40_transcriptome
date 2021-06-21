@@ -49,16 +49,11 @@ def get_args():
         type=int,
         required=True,
         help='''
-        Options are 1 or 2. Will add _1 or _2 to each read name accordingly.
+        Will add _n to the end of each read name.
         '''
     )
 
     args = parser.parse_args()
-
-    # Validate args
-    if not args.read_number in [1, 2]:
-        msg = "read_number must be set to 1 or 2. You entered {}.".format(args.read_number)
-        raise ValueError(msg)
 
     return args
 
