@@ -56,13 +56,13 @@ def get_args():
 
     parser.add_argument(
         '-r',
-        '--random',
+        '--add_random',
         type=str,
         required=False,
         default="no",
         help='''
         Default is no. If set to anything but no, adds a random number to the
-        end of each read name. It's totally random per read. 
+        end of each read name. It's totally random per read.
         '''
     )
 
@@ -79,7 +79,7 @@ def main():
     infile = args.infile
     outfile = args.outfile
     read_number = args.read_number
-    random = args.random
+    add_random = args.add_random
 
     # Main
     #--------------------------------------------------------------------#
@@ -99,7 +99,7 @@ def main():
                 title = title.split(" ")
 
                 # either add n or random number
-                if random == "no":
+                if add_random == "no":
                     title[0] += "_" + str(read_number)
                 else:
                     title[0] += "_" + str(random.randint(1,10000))
