@@ -81,7 +81,7 @@ def get_args():
         required=False,
         default="",
         help='''
-        Path to the spans file, created by this script, from illumina reads.
+        Path to the spans file, created by this script, from illumina reads. 
         If this is specified, this script will consider junctions in the input BED
         by illumia confidence.
         '''
@@ -110,9 +110,9 @@ def get_args():
         Only required if incorporating illumina junctions support.
         Default: 5
 
-        This is an interger value detailing the minimum number of
+        This is an interger value detailing the minimum number of 
         illumina reads with all junctions within a transcript of
-        the input BED to designate the BED as high-confidence.
+        the input BED to designate the BED as high-confidence. 
         '''
     )
     parser.add_argument(
@@ -143,28 +143,6 @@ def get_args():
         Path to the output file containing the spans from the unsupported transcripts.
         These transcripts contain at least one junction with fewer illumina reads than
         n_junctions supporting them.
-        '''
-    )
-
-    parser.add_argument(
-        '-d',
-        '--keep_potential_duplicates',
-        type=str,
-        required=False,
-        default="no",
-        help='''
-        Options: yes, no. Default: no
-
-        If set to no (the default), if the script encounters a read with a read
-        name that has been seem before, it considers it to be a non-primary
-        alignment (secondary or supplementary) and discards both alignments.
-
-        If set to yes, it does NOT care if it encounters the same read name
-        more than once. This is helpful if the input reads were from e.g. paired
-        end sequencing and the pairs weren't labeled with e.g. _1 and _2. When
-        you use this option, make sure that the alignment did NOT allow non-
-        primary alignments else they will be represented more than once in the
-        span output.
         '''
     )
 
@@ -298,7 +276,7 @@ def find_spans(tx_start, tx_end, blockSizes, blockStarts, tx_name):
 #------------------------------------------------------------------------------#
 # Functions for this script
 #------------------------------------------------------------------------------#
-def parse_bed_to_tx_objects(bed_path, junc_reads_only="no", keep_potential_duplicates="no"):
+def parse_bed_to_tx_objects(bed_path, junc_reads_only="no"):
     """
     Given a path to a bed file, will parse each line and load them into a transcript
     object (one per line). Thus, returns a dictionary of tx_name:tx_object.
@@ -328,8 +306,7 @@ def parse_bed_to_tx_objects(bed_path, junc_reads_only="no", keep_potential_dupli
 
             # Handle read names that occur more than once.
             # Assume this is a secondary alignment and ditch the reads entirely.
-            # This can be disabled with keep_potential_duplicates != "no"
-            if name in tx_objects and keep_potential_duplicates == "no":
+            if name in tx_objects:
                 print("{} has a supplementarty alginment, so not keeping it..".format(name))
                 del tx_objects[name]
                 continue
@@ -344,19 +321,19 @@ def illumina_spans_to_junction_counts(illumina_spans, n_genomes, genome_length, 
     all junctions/introns so they start in the first genome. It then counts instances of
     each junction. Finally, it copies the same count for each position in all other subsequent
     n_genomes (e.g. start + genome_length*i for i in range(n_genomes) and same for end)
-
+    
     Input:
         - illumina_spans: path to the illumian spans file
         - n_genomes: Number of genomes to propogate forward
         - genome_length: Length of a single viral reference.
         - span_columns: colnames of the span file.
-
+        
     Output:
         - propogated_junction_counts: Counter of structure
         (start, end, strand): count
-
+        
     """
-
+    
     # If no illumina_spans provided, just return an empty counter
     if illumina_spans == "":
         return Counter()
@@ -381,7 +358,7 @@ def illumina_spans_to_junction_counts(illumina_spans, n_genomes, genome_length, 
             end = int(line[span_columns.index("end")])
             strand = line[span_columns.index("strand")]
 
-            # Slide junctions to consolidate in the first genome - will propogate
+            # Slide junctions to consolidate in the first genome - will propogate 
             # forward in the next loop
             while start > genome_length:
                 start = start - genome_length
@@ -408,11 +385,11 @@ def split_tx_by_support(tx_objects, illumina_junction_counts, n_junctions):
     This function takes in the tx_objects dictionary and separates transcripts
     that are supported by > n_junctions illumina junctions and those that are
     not. It returns two dictionary containing the reads in question.
-
+    
     If no illumina spans were provided, illumina_junction_counts will be an
     empty Counter(). All tx_objects will then immedaitely be added to the
     supported_tx_objects output dictionary.
-
+    
     Input:
         - tx_objects: Dict (tx_name:tx) for each transcript. tx is a transcript
         object with all of the transcript information.
@@ -420,15 +397,15 @@ def split_tx_by_support(tx_objects, illumina_junction_counts, n_junctions):
         that details number of supporting illumina reads for each junction.
         - n_junctions: The minimum number of illumina reads to support ALL JUNCTIONS
         in a tx for the tx to be considered supported. AGAIN, if a single junction
-        within a multi-junction tx is not-supported, the entire transcript is labled
+        within a multi-junction tx is not-supported, the entire transcript is labled 
         not-supported.
-
+        
     Output:
         - tuple of (supported_tx_objects, unsupported_tx_objects)
         - Each is a dictionary, containing supported vs unsupported transcripts.
         - If the input illumina_junction_counts is an empty counter, all transcripts
         will automatically be in supported_tx_objects
-
+        
     """
 
     supported_tx_objects = dict()
@@ -561,7 +538,6 @@ def main():
     n_genomes = args.n_genomes
     n_junctions = args.n_junctions
     genome_length = args.genome_length
-    keep_potential_duplicates = args.keep_potential_duplicates
     output_spans_unsupported = args.output_spans_unsupported
 
     # Main
@@ -569,7 +545,7 @@ def main():
     print("{}: Starting script".format(sys.argv[0]))
 
     # Parse the bed file
-    tx_objects = parse_bed_to_tx_objects(bed_path, junc_reads_only, keep_potential_duplicates)
+    tx_objects = parse_bed_to_tx_objects(bed_path, junc_reads_only)
 
     # Extract junction counts from the illumian spans file
     illumina_junction_counts = illumina_spans_to_junction_counts(illumina_spans, n_genomes, genome_length, span_columns)
