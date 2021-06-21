@@ -8,6 +8,7 @@ import io
 from Bio.Seq import Seq
 import argparse
 import sys
+import random
 
 from utils.misc_utils import open_file
 
@@ -53,6 +54,18 @@ def get_args():
         '''
     )
 
+    parser.add_argument(
+        '-r',
+        '--random',
+        type=str,
+        required=False,
+        default="no",
+        help='''
+        Default is no. If set to anything but no, adds a random number to the
+        end of each read name. It's totally random per read. 
+        '''
+    )
+
     args = parser.parse_args()
 
     return args
@@ -66,6 +79,7 @@ def main():
     infile = args.infile
     outfile = args.outfile
     read_number = args.read_number
+    random = args.random
 
     # Main
     #--------------------------------------------------------------------#
@@ -83,7 +97,12 @@ def main():
 
                 # Label the read name
                 title = title.split(" ")
-                title[0] += "_" + str(read_number)
+
+                # either add n or random number
+                if random == "no":
+                    title[0] += "_" + str(read_number)
+                else:
+                    title[0] += "_" + str(random.randint(1,10000))
                 title = " ".join(title)
 
                 # Write it out
